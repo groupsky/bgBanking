@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LoginActivityOuterFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="@dimen/title_logo_size"
+        android:layout_height="@dimen/title_logo_size"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/title_indent"
+        android:contentDescription="@string/ui_content_description_bank_logo"
+        android:gravity="bottom"
+        android:minHeight="@dimen/title_height"
+        android:src="@drawable/ic_bankicon_dskbank" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/logo"
+        android:layout_marginLeft="@dimen/title_indent"
+        android:gravity="bottom"
+        android:minHeight="@dimen/title_height"
+        android:text="@string/ui_activity_login_title"
+        android:textAppearance="@style/Title" />
+
+    <View
+        android:id="@+id/top_divider"
+        style="@style/TopDivider"
+        android:layout_below="@id/title" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_divider"
+        android:orientation="horizontal" >
+
+        <View style="@style/InputFieldSideView" />
+
+        <LinearLayout
+            style="@style/InputFieldView"
+            android:layout_marginTop="@dimen/input_field_vmargins"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:layout_marginLeft="@dimen/description_margin_sides"
+                android:layout_marginRight="@dimen/description_margin_sides"
+                android:layout_marginTop="@dimen/input_field_vmargins"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/username_fixed"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/description_margin_sides"
+                android:layout_marginRight="@dimen/description_margin_sides"
+                android:layout_marginTop="@dimen/input_field_vmargins"
+                android:singleLine="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textSize="20.0sp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/username_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/input_field_vmargins"
+                android:capitalize="none"
+                android:hint="@string/username"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textSize="20.0sp"
+                tools:ignore="Deprecated" />
+
+            <EditText
+                android:id="@+id/password_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/input_field_vmargins"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:password="true"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textSize="20.0sp"
+                tools:ignore="Deprecated" />
+
+            <TextView
+                android:id="@+id/sign_in_agreement"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/input_field_vmargins"
+                android:text="@string/sign_in_agreement" />
+        </LinearLayout>
+
+        <View style="@style/InputFieldSideView" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/back_button"
+        style="@style/BackButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/back_button_label" />
+
+    <Button
+        android:id="@+id/next_button"
+        style="@style/NextButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/sign_in_button_label" />
+
+</RelativeLayout>

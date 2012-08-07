@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="eu.masconsult.bgbanking.dskbank"
-    android:icon="@drawable/ic_bank_dsk"
-    android:label="@string/bank_dsk"
-    android:smallIcon="@drawable/ic_bank_dsk" />
+    android:accountType="@string/bank_account_type_procreditbank"
+    android:icon="@drawable/ic_bankicon_procreditbank"
+    android:label="@string/bank_name_procreditbank"
+    android:smallIcon="@drawable/ic_bankicon_procreditbank" />

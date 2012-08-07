@@ -2,9 +2,9 @@
     package="eu.masconsult.bgbanking"
     android:versionCode="1"
     android:versionName="1.0" >
-    
+
     <!-- We need this to be able to create accounts in AccountManager -->
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -26,7 +26,7 @@
 
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator_probanking" />
+                android:resource="@xml/authenticator_procreditbank" />
         </service>
         <service
             android:name=".banks.dskbank.AuthenticationService"
@@ -38,8 +38,21 @@
 
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator_dskdirect" />
+                android:resource="@xml/authenticator_dskbank" />
         </service>
+
+        <!-- The login activity -->
+        <activity
+            android:name=".accounts.LoginActivity"
+            android:label="@string/ui_activity_login_title"
+            android:theme="@style/LoginActivity" >
+
+            <!--
+                No intent-filter here! This activity is only ever launched by
+                someone who explicitly knows the class name
+            -->
+
+        </activity>
     </application>
 
 </manifest>

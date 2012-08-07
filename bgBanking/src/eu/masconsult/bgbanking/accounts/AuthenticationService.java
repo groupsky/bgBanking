@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package eu.masconsult.bgbanking.accounts;
 
 import android.accounts.AbstractAccountAuthenticator;
@@ -24,7 +25,7 @@ import android.os.IBinder;
 /**
  * Service to return {@link IBinder} to {@link AbstractAccountAuthenticator}
  */
-public class AuthenticationService extends Service {
+public abstract class AuthenticationService extends Service {
 
     // we only need one authenticator to handle all requests
     private static AccountAuthenticator AUTHENTICATOR = null;

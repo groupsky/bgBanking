@@ -1,6 +1,39 @@
+<!--
+  Copyright (c) 2012 MASConsult Ltd
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <resources>
     <string name="app_name">bgBanking</string>
     
-    <string name="bank_procredit">ProCredit Bank</string>
-    <string name="bank_dsk">DSK Bank</string>
+    <!-- DSK Bank strings -->
+    <skip />
+    <string name="bank_name_dskbank">DSK Bank</string>
+    <string name="bank_account_type_dskbank">eu.masconsult.bgbanking.dskbank</string>
+
+    <!-- ProCredit Bank strings -->
+    <skip />
+    <string name="bank_name_procreditbank">ProCredit Bank</string>
+    <string name="bank_account_type_procreditbank">eu.masconsult.bgbanking.procredit</string>
+    
+    <!-- Login activity strings -->
+    <skip />
+    <string name="ui_activity_login_title">Sign in</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in_agreement">TODO warn that no liability is offered!</string>
+    <string name="back_button_label">Back</string>
+    <string name="sign_in_button_label">Sign in</string>
+    <string name="ui_content_description_bank_logo">bank logo</string>
+    
 </resources>

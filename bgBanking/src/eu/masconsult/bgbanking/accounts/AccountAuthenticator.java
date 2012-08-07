@@ -22,6 +22,7 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
@@ -31,11 +32,11 @@ import eu.masconsult.bgbanking.BankingApplication;
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     private static final String TAG = BankingApplication.TAG + "AcAuth";
-    private final AccountManager am;
+    private Context context;
 
     public AccountAuthenticator(Context context) {
         super(context);
-        am = AccountManager.get(context);
+        this.context = context;
     }
 
     @Override
@@ -45,15 +46,22 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         Log.v(TAG, "addAccount(type: " + accountType + ", authTokenType: " + authTokenType + ")");
 
         // TODO Show Authentication activity
+        final Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        return bundle;
 
-        final Account account = new Account("some test username", accountType);
-        am.addAccountExplicitly(account, "some fake password", null);
-
-        Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-
-        return result;
+        // final Account account = new Account("some test username",
+        // accountType);
+        // am.addAccountExplicitly(account, "some fake password", null);
+        //
+        // Bundle result = new Bundle();
+        // result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+        // result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+        //
+        // return result;
     }
 
     @Override
