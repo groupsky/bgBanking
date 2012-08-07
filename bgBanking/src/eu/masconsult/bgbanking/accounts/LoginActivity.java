@@ -1,10 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2012 MASConsult Ltd
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package eu.masconsult.bgbanking.accounts;
 
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +34,7 @@ import android.widget.TextView;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
+import eu.masconsult.bgbanking.ui.LightProgressDialog;
 
 public class LoginActivity extends AccountAuthenticatorActivity implements OnClickListener,
         TextWatcher {
@@ -66,12 +86,28 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
             case R.id.back_button:
                 finish();
                 break;
+            case R.id.next_button:
+                signIn();
+                break;
         }
     }
 
+    private void signIn() {
+        final AlertDialog dialog = LightProgressDialog.create(this,
+                R.string.login_activity_authenticating);
+        dialog.setCancelable(true);
+        dialog.setOnCancelListener(new OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+            }
+        });
+        dialog.show();
+    }
+
     private void validateInputs() {
-        nextBtn.setEnabled(usernameEdit.getText().length() > 0
-                && passwordEdit.getText().length() > 0);
+        nextBtn.setEnabled(!TextUtils.isEmpty(usernameEdit.getText())
+                && !TextUtils.isEmpty(passwordEdit.getText()));
     }
 
     @Override

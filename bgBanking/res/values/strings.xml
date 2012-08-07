@@ -35,5 +35,6 @@
     <string name="back_button_label">Back</string>
     <string name="sign_in_button_label">Sign in</string>
     <string name="ui_content_description_bank_logo">bank logo</string>
+    <string name="login_activity_authenticating">Logging in…</string>
     
 </resources>
