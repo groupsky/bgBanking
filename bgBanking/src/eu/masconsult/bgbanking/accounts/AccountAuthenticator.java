@@ -45,23 +45,12 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             throws NetworkErrorException {
         Log.v(TAG, "addAccount(type: " + accountType + ", authTokenType: " + authTokenType + ")");
 
-        // TODO Show Authentication activity
         final Intent intent = new Intent(context, LoginActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
         return bundle;
-
-        // final Account account = new Account("some test username",
-        // accountType);
-        // am.addAccountExplicitly(account, "some fake password", null);
-        //
-        // Bundle result = new Bundle();
-        // result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-        // result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-        //
-        // return result;
     }
 
     @Override
