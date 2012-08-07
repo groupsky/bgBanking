@@ -42,7 +42,7 @@ limitations under the License.]]></copyright>
 	</header>
 	<header contentId="org.eclipse.pde.featureManifest" excluded="true" />
 	<header contentId="org.eclipse.pde.compositeCheatSheet" excluded="true" />
-	<header contentId="org.eclipse.jdt.core.javaSource" postBlankLines="0" lineFormat="false" preserveFirstLine="false">
+	<header contentId="org.eclipse.jdt.core.javaSource" postBlankLines="1" lineFormat="false" preserveFirstLine="false">
 		<beginLine><![CDATA[/*******************************************************************************]]></beginLine>
 		<linePrefix><![CDATA[ * ]]></linePrefix>
 		<endLine><![CDATA[ ******************************************************************************/]]></endLine>
