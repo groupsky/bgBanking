@@ -16,6 +16,10 @@
 <resources>
     <string name="app_name">bgBanking</string>
     
+    <!-- Authority type -->
+    <skip/>
+    <string name="authority_type">eu.masconsult.bgbanking</string>
+    
     <!-- DSK Bank strings -->
     <skip />
     <string name="bank_name_dskbank">DSK Bank</string>
@@ -36,5 +40,7 @@
     <string name="sign_in_button_label">Sign in</string>
     <string name="ui_content_description_bank_logo">bank logo</string>
     <string name="login_activity_authenticating">Logging in…</string>
+    <string name="login_activity_loginfail_text_both">Invalid username or password!</string>
+    <string name="login_activity_loginfail_text_pwonly">Wrong password!</string>
     
 </resources>

@@ -17,32 +17,61 @@
 package eu.masconsult.bgbanking.banks;
 
 import android.content.Context;
+import android.util.Log;
+import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
+import eu.masconsult.bgbanking.banks.dskbank.DskClient;
+import eu.masconsult.bgbanking.banks.procreditbank.ProcreditClient;
 
 public enum Bank {
 
     // DSK Bank
-    DSKBank(R.string.bank_account_type_dskbank, R.drawable.ic_bankicon_dskbank),
+    DSKBank(R.string.bank_account_type_dskbank, R.drawable.ic_bankicon_dskbank, DskClient.class),
     // ProCredit Bank
-    ProCreditBank(R.string.bank_account_type_procreditbank, R.drawable.ic_bankicon_procreditbank);
+    ProCreditBank(R.string.bank_account_type_procreditbank, R.drawable.ic_bankicon_procreditbank,
+            ProcreditClient.class);
 
-    public final int accountTypeResource;
+    private static final String TAG = BankingApplication.TAG + "Bank";
+
+    private final int accountTypeResource;
     public final int iconResource;
+    private final Class<? extends BankClient> clientClass;
+    private BankClient client = null;
 
-    private Bank(int accountTypeResource, int iconResource) {
+    private Bank(int accountTypeResource, int iconResource, Class<? extends BankClient> clientClass) {
         this.accountTypeResource = accountTypeResource;
         this.iconResource = iconResource;
+        this.clientClass = clientClass;
     }
 
     public static Bank fromAccountType(Context context, String accountType) {
         if (accountType == null) {
             return null;
         }
+        // TODO use hashmap to speed things up
         for (Bank bank : values()) {
             if (accountType.equals(context.getString(bank.accountTypeResource))) {
                 return bank;
             }
         }
         return null;
+    }
+
+    public BankClient getClient() {
+        if (client != null) {
+            return client;
+        }
+
+        try {
+            client = clientClass.newInstance();
+        } catch (InstantiationException e) {
+            Log.e(TAG, "can't create " + name() + " bank client", e);
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "can't create " + name() + " bank client", e);
+            throw new RuntimeException(e);
+        }
+
+        return client;
     }
 }

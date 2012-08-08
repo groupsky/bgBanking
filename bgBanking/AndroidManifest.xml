@@ -5,7 +5,9 @@
 
     <!-- We need this to be able to create accounts in AccountManager -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-
+    <!-- to enable automatic syncing -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
