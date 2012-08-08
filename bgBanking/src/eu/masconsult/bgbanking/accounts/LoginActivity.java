@@ -18,6 +18,9 @@ package eu.masconsult.bgbanking.accounts;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_ENTER;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
@@ -32,11 +35,14 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.Constants;
 import eu.masconsult.bgbanking.R;
@@ -103,6 +109,33 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Const
 
         usernameEdit.addTextChangedListener(this);
         passwordEdit.addTextChangedListener(this);
+
+        passwordEdit.setOnKeyListener(new OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event != null && ACTION_DOWN == event.getAction()
+                        && keyCode == KEYCODE_ENTER && nextBtn.isEnabled()) {
+                    signIn();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        passwordEdit.setOnEditorActionListener(new OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId,
+                    KeyEvent event) {
+                if (actionId == IME_ACTION_DONE && nextBtn.isEnabled()) {
+                    signIn();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         if (!requestNewAccount) {
             usernameFixedView.setVisibility(View.VISIBLE);
