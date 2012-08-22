@@ -16,6 +16,10 @@
 
 package eu.masconsult.bgbanking.banks;
 
+import java.io.IOException;
+
+import org.apache.http.ParseException;
+
 public interface BankClient {
 
     /**
@@ -26,7 +30,12 @@ public interface BankClient {
      * @param password password to use for authentication
      * @return authToken that represents successful authentication. A
      *         <code>null</code> value means authentication failed.
+     * @throws IOException in case service communication is temporarily
+     *             unavailable, and could succeed if tried again
+     * @throws ParseException in case some or all received data was not
+     *             understandable. This may indicate server-side change and thus
+     *             a new version of the client should be implemented.
      */
-    String authenticate(String username, String password);
+    String authenticate(String username, String password) throws IOException, ParseException;
 
 }
