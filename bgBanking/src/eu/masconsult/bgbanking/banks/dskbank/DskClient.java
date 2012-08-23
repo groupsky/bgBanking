@@ -16,12 +16,26 @@
 
 package eu.masconsult.bgbanking.banks.dskbank;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.http.ParseException;
+import org.apache.http.auth.AuthenticationException;
+
 import eu.masconsult.bgbanking.banks.BankClient;
+import eu.masconsult.bgbanking.banks.RawBankAccount;
 
 public class DskClient implements BankClient {
 
     @Override
     public String authenticate(String username, String password) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<RawBankAccount> getBankAccounts(String authtoken) throws IOException,
+            ParseException, AuthenticationException {
         // TODO Auto-generated method stub
         return null;
     }

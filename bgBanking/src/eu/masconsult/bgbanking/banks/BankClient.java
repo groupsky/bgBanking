@@ -17,8 +17,10 @@
 package eu.masconsult.bgbanking.banks;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.http.ParseException;
+import org.apache.http.auth.AuthenticationException;
 
 public interface BankClient {
 
@@ -26,8 +28,8 @@ public interface BankClient {
      * Authenticates with the banking service and returns authToken/cookie for
      * use in following operations.
      * 
-     * @param username username to use for authentication
-     * @param password password to use for authentication
+     * @param username to use for authentication
+     * @param password to use for authentication
      * @return authToken that represents successful authentication. A
      *         <code>null</code> value means authentication failed.
      * @throws IOException in case service communication is temporarily
@@ -37,5 +39,22 @@ public interface BankClient {
      *             a new version of the client should be implemented.
      */
     String authenticate(String username, String password) throws IOException, ParseException;
+
+    /**
+     * Retrieves all accounts with their sums
+     * 
+     * @param authtoken authToken obtained from a previous call to
+     *            {@link #authenticate(String, String)}
+     * @return list of all bank accounts
+     * @throws IOException some low level communication problem
+     * @throws ParseException when the server response is unexpected and cannot
+     *             be handled
+     * @throws AuthenticationException if the authToken has expired or is
+     *             invalid. Should try to obtain new one using
+     *             {@link #authenticate(String, String)} and if it doesn't work
+     *             then user need to provide new credentials
+     */
+    List<RawBankAccount> getBankAccounts(String authtoken) throws IOException, ParseException,
+            AuthenticationException;
 
 }

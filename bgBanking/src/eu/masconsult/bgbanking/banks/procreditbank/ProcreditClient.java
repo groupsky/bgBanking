@@ -19,14 +19,20 @@ package eu.masconsult.bgbanking.banks.procreditbank;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -34,13 +40,21 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.banks.BankClient;
+import eu.masconsult.bgbanking.banks.RawBankAccount;
+import eu.masconsult.bgbanking.utils.Convert;
 
 public class ProcreditClient implements BankClient {
+
     /** The tag used to log to adb console. */
     private static final String TAG = BankingApplication.TAG + "NetworkUtilities";
     /** POST parameter name for the user's account name */
@@ -59,10 +73,6 @@ public class ProcreditClient implements BankClient {
     private static final String PARAM_FORCE_NO = "";
     /** POST parameter value for forcing new session */
     private static final String PARAM_FORCE_YES = "Yes";
-    /** POST parameter name for the client's last-known sync state */
-    private static final String PARAM_SYNC_STATE = "syncstate";
-    /** POST parameter name for the sending client-edited contact info */
-    private static final String PARAM_CONTACTS_DATA = "contacts";
     /** Timeout (in ms) we specify for each http request */
     private static final int HTTP_REQUEST_TIMEOUT_MS = 30 * 1000;
     /** Domain for ProB@nking website */
@@ -79,19 +89,22 @@ public class ProcreditClient implements BankClient {
     private static final String LOCATION_BAD_AUTH = "/?bad=bad";
     /** HEADER value for location redirect */
     private static final String LOCATION_AUTH_OK = "/";
-    /** Cookie name for the session id */
-    private static final String COOKIE_SESSION = "ASPSESSIONIDQCTATABR";
+    /** Name of cookie header */
+    private static final String COOKIE = "Cookie";
 
     /**
      * Configures the httpClient to connect to the URL provided.
+     * 
+     * @param authToken
      */
-    private static DefaultHttpClient getHttpClient() {
+    private static DefaultHttpClient getHttpClient(final String authToken) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         final HttpParams params = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         HttpConnectionParams.setSoTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         HttpClientParams.setRedirecting(params, false);
+        httpClient.addRequestInterceptor(new AuthTokenInterceptor(authToken));
         return httpClient;
     }
 
@@ -116,7 +129,7 @@ public class ProcreditClient implements BankClient {
         post.setHeader("Accept", "*/*");
         post.setEntity(entity);
         try {
-            resp = getHttpClient().execute(post);
+            resp = getHttpClient(null).execute(post);
 
             if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 // TODO: validate we are told there is an active session
@@ -159,6 +172,78 @@ public class ProcreditClient implements BankClient {
             throw e;
         } finally {
             Log.v(TAG, "getAuthtoken completing");
+        }
+    }
+
+    @Override
+    public List<RawBankAccount> getBankAccounts(String authtoken) throws IOException,
+            ParseException, AuthenticationException {
+
+        DefaultHttpClient httpClient = getHttpClient(authtoken);
+
+        // Create an array that will hold the server-side account
+        final ArrayList<RawBankAccount> bankAccounts = new ArrayList<RawBankAccount>();
+
+        // Get the accounts list
+        Log.i(TAG, "Getting from: " + GET_BANK_ACCOUNTS_URI);
+        final HttpGet get = new HttpGet(GET_BANK_ACCOUNTS_URI);
+        get.setHeader("Accept", "*/*");
+
+        Log.v(TAG, "sending " + get.toString());
+        final HttpResponse resp = httpClient.execute(get);
+
+        if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String response = EntityUtils.toString(resp.getEntity());
+            Log.v(TAG, "response = " + response);
+            // Our request to the server was successful, now we need to parse
+            // the result
+            Document doc = Jsoup.parse(response, BASE_URL);
+
+            for (Element row : doc.getElementsByTag("table").get(0).getElementsByTag("tbody")
+                    .get(0).getElementsByTag("tr")) {
+                RawBankAccount bankAccount = obtainBankAccountFromHtmlTableRow(row);
+                if (bankAccount != null) {
+                    bankAccounts.add(bankAccount);
+                }
+            }
+        } else if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
+            // TODO: validate session has expired
+            Log.e(TAG, "Authentication exception in getting bank accounts");
+            throw new AuthenticationException("session has expired");
+        } else {
+            throw new ParseException("status after get accounts: "
+                    + resp.getStatusLine().getStatusCode() + " "
+                    + resp.getStatusLine().getReasonPhrase());
+        }
+
+        return bankAccounts;
+    }
+
+    private static RawBankAccount obtainBankAccountFromHtmlTableRow(Element row) {
+        Elements cells = row.getElementsByTag("td");
+        // if this is the header, skip it
+        if (cells.size() == 0) {
+            return null;
+        }
+
+        return new RawBankAccount()
+                .setIBAN(cells.get(0).text())
+                .setCurrency(cells.get(1).text())
+                .setBalance(Convert.strToFloat(cells.get(4).text()))
+                .setAvailableBalance(Convert.strToFloat(cells.get(5).text()));
+    }
+
+    private static final class AuthTokenInterceptor implements HttpRequestInterceptor {
+        private final String authtoken;
+
+        private AuthTokenInterceptor(String authtoken) {
+            this.authtoken = authtoken;
+        }
+
+        @Override
+        public void process(HttpRequest request, HttpContext context) throws HttpException,
+                IOException {
+            request.setHeader(COOKIE, authtoken);
         }
     }
 }
