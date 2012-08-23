@@ -24,12 +24,6 @@ public class ChooseAccountTypeFragment extends DialogFragment implements OnItemC
         super.onCreate(savedInstanceState);
 
         Bank[] banks = Bank.values();
-        String[] accountTypes = new String[banks.length];
-
-        for (int i = 0; i < banks.length; i++) {
-            accountTypes[i] = getActivity().getString(banks[i].getAccountTypeResource());
-        }
-
         adapter = new BankAdapter(getActivity(), banks);
     }
 
@@ -55,7 +49,7 @@ public class ChooseAccountTypeFragment extends DialogFragment implements OnItemC
     @Override
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         AccountManager.get(getActivity()).addAccount(
-                getActivity().getString(adapter.getItem(position).getAccountTypeResource()), null,
+                adapter.getItem(position).getAccountType(getActivity()), null,
                 null, null, getActivity(), null, null);
     }
 
