@@ -56,7 +56,7 @@ import eu.masconsult.bgbanking.utils.Convert;
 public class ProcreditClient implements BankClient {
 
     /** The tag used to log to adb console. */
-    private static final String TAG = BankingApplication.TAG + "NetworkUtilities";
+    private static final String TAG = BankingApplication.TAG + "ProcreditClient";
     /** POST parameter name for the user's account name */
     private static final String PARAM_USERNAME = "uName";
     /** POST parameter name for the user's password */
