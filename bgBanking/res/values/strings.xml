@@ -42,5 +42,6 @@
     <string name="login_activity_authenticating">Logging in…</string>
     <string name="login_activity_loginfail_text_both">Invalid username or password!</string>
     <string name="login_activity_loginfail_text_pwonly">Wrong password!</string>
+    <string name="choose_account_type">Choose account type</string>
     
 </resources>

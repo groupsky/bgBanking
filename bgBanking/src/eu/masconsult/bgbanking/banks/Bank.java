@@ -26,21 +26,27 @@ import eu.masconsult.bgbanking.banks.procreditbank.ProcreditClient;
 public enum Bank {
 
     // DSK Bank
-    DSKBank(R.string.bank_account_type_dskbank, R.drawable.ic_bankicon_dskbank, DskClient.class),
+    DSKBank(R.string.bank_account_type_dskbank, R.drawable.ic_bankicon_dskbank,
+            R.string.bank_name_dskbank, DskClient.class),
     // ProCredit Bank
     ProCreditBank(R.string.bank_account_type_procreditbank, R.drawable.ic_bankicon_procreditbank,
+            R.string.bank_name_procreditbank,
             ProcreditClient.class);
 
     private static final String TAG = BankingApplication.TAG + "Bank";
 
     private final int accountTypeResource;
     public final int iconResource;
+    public final int labelRes;
     private final Class<? extends BankClient> clientClass;
     private BankClient client = null;
+    private String accountTypeString = null;
 
-    private Bank(int accountTypeResource, int iconResource, Class<? extends BankClient> clientClass) {
+    private Bank(int accountTypeResource, int iconResource, int labelRes,
+            Class<? extends BankClient> clientClass) {
         this.accountTypeResource = accountTypeResource;
         this.iconResource = iconResource;
+        this.labelRes = labelRes;
         this.clientClass = clientClass;
     }
 
@@ -73,5 +79,12 @@ public enum Bank {
         }
 
         return client;
+    }
+
+    public String getAccountType(Context context) {
+        if (accountTypeString == null) {
+            accountTypeString = context.getString(accountTypeResource);
+        }
+        return accountTypeString;
     }
 }
