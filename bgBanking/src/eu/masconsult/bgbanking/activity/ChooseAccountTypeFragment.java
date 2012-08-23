@@ -51,6 +51,7 @@ public class ChooseAccountTypeFragment extends DialogFragment implements OnItemC
         AccountManager.get(getActivity()).addAccount(
                 adapter.getItem(position).getAccountType(getActivity()), null,
                 null, null, getActivity(), null, null);
+        dismiss();
     }
 
 }

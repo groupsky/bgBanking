@@ -11,6 +11,11 @@ public class HomeActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         checkForLoggedAccounts();
     }
 
