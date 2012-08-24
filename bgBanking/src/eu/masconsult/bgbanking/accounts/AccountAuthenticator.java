@@ -16,6 +16,18 @@
 
 package eu.masconsult.bgbanking.accounts;
 
+import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.accounts.AccountManager.KEY_AUTHTOKEN;
+import static android.accounts.AccountManager.KEY_ERROR_CODE;
+import static android.accounts.AccountManager.KEY_ERROR_MESSAGE;
+import static android.accounts.AccountManager.KEY_INTENT;
+
+import java.io.IOException;
+
+import org.apache.http.ParseException;
+
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -26,6 +38,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
+import eu.masconsult.bgbanking.Constants;
+import eu.masconsult.bgbanking.banks.Bank;
 
 /**
  */
@@ -33,10 +47,12 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     private static final String TAG = BankingApplication.TAG + "AcAuth";
     private Context context;
+    private AccountManager accountManager;
 
     public AccountAuthenticator(Context context) {
         super(context);
         this.context = context;
+        accountManager = AccountManager.get(context);
     }
 
     @Override
@@ -46,10 +62,10 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         Log.v(TAG, "addAccount(type: " + accountType + ", authTokenType: " + authTokenType + ")");
 
         final Intent intent = new Intent(context, LoginActivity.class);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        bundle.putParcelable(KEY_INTENT, intent);
         return bundle;
     }
 
@@ -72,8 +88,44 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account,
             String authTokenType, Bundle options) throws NetworkErrorException {
         Log.v(TAG, "getAuthToken(account: " + account + ", authTokenType: " + authTokenType + ")");
-        // TODO Auto-generated method stub
-        return null;
+
+        Bank bank = Bank.fromAccountType(context, account.type);
+        if (bank == null) {
+            throw new IllegalArgumentException("unsupported account type " + account.type);
+        }
+        if (!Constants.getAuthorityType(context).equals(authTokenType)) {
+            throw new IllegalArgumentException("unsupported authTOkenType " + authTokenType);
+        }
+
+        final Intent intent = new Intent(context, LoginActivity.class);
+        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
+        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
+
+        String password = accountManager.getPassword(account);
+        try {
+            String authToken = bank.getClient().authenticate(account.name, password);
+            Log.v(TAG, "obtained auth token " + authToken);
+
+            if (authToken == null) {
+                // we need new credentials
+                final Bundle bundle = new Bundle();
+                bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+                return bundle;
+            }
+
+            // store the new auth token and return it
+            accountManager.setAuthToken(account, authTokenType, authToken);
+            intent.putExtra(KEY_AUTHTOKEN, authToken);
+            return intent.getExtras();
+        } catch (ParseException e) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(KEY_ERROR_CODE, 1);
+            bundle.putString(KEY_ERROR_MESSAGE, e.getMessage());
+            return bundle;
+        } catch (IOException e) {
+            throw new NetworkErrorException(e);
+        }
     }
 
     @Override

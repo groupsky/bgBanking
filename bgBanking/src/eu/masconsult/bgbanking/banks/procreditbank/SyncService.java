@@ -14,11 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-package eu.masconsult.bgbanking.utils;
+package eu.masconsult.bgbanking.banks.procreditbank;
 
-public class Convert {
+/**
+ * Defined to allow multiple sync services
+ */
+public class SyncService extends eu.masconsult.bgbanking.sync.SyncService {
 
-    public static float strToFloat(String text) {
-        return Float.valueOf(text.trim().replace(',', '.').replace("\u00a0", ""));
-    }
 }

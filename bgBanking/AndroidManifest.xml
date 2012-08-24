@@ -3,18 +3,20 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <!-- We need this to be able to create accounts in AccountManager -->
+    <!-- We need this to be able to create accounts in AccountManager and retrieve stored password -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <!-- to enable automatic syncing -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    
+
     <!-- to redirect for new account -->
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    
+
     <!-- to get logged accounts -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- to read stored authToken -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -63,6 +65,38 @@
             -->
 
         </activity>
+
+        <!-- SyncAdapters -->
+        <service
+            android:name=".banks.dskbank.SyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter_dskbank" />
+        </service>
+        <service
+            android:name=".banks.procreditbank.SyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter_procreditbank" />
+        </service>
+
+        <!-- The content provider -->
+        <provider
+            android:name=".provider.BankingProvider"
+            android:authorities="@string/authority_type"
+            android:exported="false" >
+        </provider>
+
         <activity android:name=".activity.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

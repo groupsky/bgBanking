@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -161,7 +162,7 @@ public class DskClient implements BankClient {
     public List<RawBankAccount> getBankAccounts(String authtoken) throws IOException,
             ParseException, AuthenticationException {
         // TODO Auto-generated method stub
-        return null;
+        return new LinkedList<RawBankAccount>();
     }
 
 }

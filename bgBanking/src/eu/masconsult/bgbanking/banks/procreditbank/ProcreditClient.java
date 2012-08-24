@@ -65,12 +65,8 @@ public class ProcreditClient implements BankClient {
     private static final String PARAM_LANGUAGE = "lng";
     /** POST parameter value for the selected language */
     private static final String PARAM_LANGUAGE_BG = "";
-    /** POST parameter value for the selected language */
-    private static final String PARAM_LANGUAGE_EN = "e_";
     /** POST parameter name for forcing new session */
     private static final String PARAM_FORCE = "reconect";
-    /** POST parameter value for forcing new session */
-    private static final String PARAM_FORCE_NO = "";
     /** POST parameter value for forcing new session */
     private static final String PARAM_FORCE_YES = "Yes";
     /** Timeout (in ms) we specify for each http request */

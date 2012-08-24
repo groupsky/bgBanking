@@ -49,8 +49,8 @@ import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.ui.LightProgressDialog;
 
-public class LoginActivity extends AccountAuthenticatorActivity implements Constants,
-        OnClickListener, TextWatcher {
+public class LoginActivity extends AccountAuthenticatorActivity implements OnClickListener,
+        TextWatcher {
 
     private static final String TAG = BankingApplication.TAG + "LoginAct";
 
@@ -301,7 +301,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements Const
     private void configureSyncFor(Account account) {
         Log.d(TAG, "Configuring account sync");
 
-        String authorityType = getString(AUTHORITY_RESOURCE);
+        String authorityType = Constants.getAuthorityType(this);
         ContentResolver.setIsSyncable(account, authorityType, 1);
         ContentResolver.setSyncAutomatically(account, authorityType, true);
         ContentResolver.addPeriodicSync(account, authorityType, new Bundle(), SYNC_PERIOD);

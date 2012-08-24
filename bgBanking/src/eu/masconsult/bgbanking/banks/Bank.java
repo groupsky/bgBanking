@@ -26,10 +26,15 @@ import eu.masconsult.bgbanking.banks.procreditbank.ProcreditClient;
 public enum Bank {
 
     // DSK Bank
-    DSKBank(R.string.bank_account_type_dskbank, R.drawable.ic_bankicon_dskbank,
-            R.string.bank_name_dskbank, DskClient.class),
+    DSKBank(
+            R.string.bank_account_type_dskbank,
+            R.drawable.ic_bankicon_dskbank,
+            R.string.bank_name_dskbank,
+            DskClient.class),
     // ProCredit Bank
-    ProCreditBank(R.string.bank_account_type_procreditbank, R.drawable.ic_bankicon_procreditbank,
+    ProCreditBank(
+            R.string.bank_account_type_procreditbank,
+            R.drawable.ic_bankicon_procreditbank,
             R.string.bank_name_procreditbank,
             ProcreditClient.class);
 
