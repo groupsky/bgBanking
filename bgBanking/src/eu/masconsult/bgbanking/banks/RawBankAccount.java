@@ -23,10 +23,30 @@ package eu.masconsult.bgbanking.banks;
  */
 final public class RawBankAccount {
 
+    private String serverId;
+    private String name;
     private String iban;
     private String currency;
     private float balance;
     private float availableBalance;
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public RawBankAccount setServerId(String serverId) {
+        this.serverId = serverId;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public RawBankAccount setName(String name) {
+        this.name = name;
+        return this;
+    }
 
     public String getIBAN() {
         return iban;
@@ -66,8 +86,9 @@ final public class RawBankAccount {
 
     @Override
     public String toString() {
-        return "RawBankAccount [iban=" + iban + ", currency=" + currency + ", balance=" + balance
-                + ", availableBalance=" + availableBalance + "]";
+        return "RawBankAccount [serverId=" + serverId + ", name=" + name + ", iban=" + iban
+                + ", currency=" + currency + ", balance=" + balance + ", availableBalance="
+                + availableBalance + "]";
     }
 
 }

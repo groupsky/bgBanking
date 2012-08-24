@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,6 +32,7 @@ import org.apache.http.ParseException;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -42,12 +44,14 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import android.net.UrlQuerySanitizer;
 import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.banks.BankClient;
 import eu.masconsult.bgbanking.banks.RawBankAccount;
+import eu.masconsult.bgbanking.utils.Convert;
 
 public class DskClient implements BankClient {
 
@@ -61,9 +65,11 @@ public class DskClient implements BankClient {
     private static final String DOMAIN = "www.dskdirect.bg";
     /** Base URL for DSK Direct website */
     private static final String BASE_URL = "https://" + DOMAIN + "/page/default.aspx";
-    private static final String XML_ID_PREFIX = "/bg-BG/";
+    private static final String XML_ID_PREFIX = "/en-US/";
     /** URI for authentication service */
     private static final String AUTH_XML_ID = XML_ID_PREFIX + ".processlogin";
+    /** URI for retrieving bank account */
+    private static final String LIST_ACCOUNTS_XML_ID = XML_ID_PREFIX + "01Individuals/02Accounts/";
 
     /** POST parameter name for the user's account name */
     private static final String PARAM_USERNAME = "userName";
@@ -77,6 +83,10 @@ public class DskClient implements BankClient {
     private static final String PARAM_USER_ID = "user_id";
 
     private static final String PARAM_SESSION_ID = "session_id";
+
+    private static final Pattern PATTERN_MATCH_BANK_ACCOUNT_ID =
+            Pattern.compile(".*document\\.forms\\[0\\]\\.BankAccountID\\.value='(\\d+)';.*",
+                    Pattern.MULTILINE | Pattern.DOTALL);
 
     /**
      * Configures the httpClient to connect to the URL provided.
@@ -159,10 +169,101 @@ public class DskClient implements BankClient {
     }
 
     @Override
-    public List<RawBankAccount> getBankAccounts(String authtoken) throws IOException,
+    public List<RawBankAccount> getBankAccounts(String authToken) throws IOException,
             ParseException, AuthenticationException {
-        // TODO Auto-generated method stub
-        return new LinkedList<RawBankAccount>();
+        String uri = BASE_URL + "?" + URLEncodedUtils.format(
+                Arrays.asList(new BasicNameValuePair(XML_ID, LIST_ACCOUNTS_XML_ID)), ENCODING)
+                + "&" + authToken;
+
+        // Get the accounts list
+        Log.i(TAG, "Getting from: " + uri);
+        final HttpGet get = new HttpGet(uri);
+        get.setHeader("Accept", "*/*");
+
+        DefaultHttpClient httpClient = getHttpClient();
+
+        Log.v(TAG, "sending " + get.toString());
+        final HttpResponse resp = httpClient.execute(get);
+
+        if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            throw new ParseException("getBankAccounts: unhandled http status "
+                    + resp.getStatusLine().getStatusCode() + " "
+                    + resp.getStatusLine().getReasonPhrase());
+        }
+
+        String response = EntityUtils.toString(resp.getEntity());
+        Log.v(TAG, "response = " + response);
+
+        Document doc = Jsoup.parse(response, BASE_URL);
+
+        if (!checkLoggedIn(doc)) {
+            throw new AuthenticationException("session expired!");
+        }
+
+        Element content = doc.getElementById("PageContent");
+        if (content == null) {
+            throw new ParseException("getBankAccounts: can't find PageContent");
+        }
+
+        Elements tables = content.getElementsByTag("table");
+        if (tables == null || tables.size() == 0) {
+            throw new ParseException("getBankAccounts: can't find table in PageContent");
+        }
+
+        Elements rows = tables.first().getElementsByTag("tr");
+        if (rows == null || rows.size() == 0) {
+            throw new ParseException("getBankAccounts: first table is empty in PageContent");
+        }
+
+        ArrayList<RawBankAccount> bankAccounts = new ArrayList<RawBankAccount>(rows.size());
+
+        for (Element row : rows) {
+            RawBankAccount bankAccount = obtainBankAccountFromHtmlTableRow(row);
+            if (bankAccount != null) {
+                bankAccounts.add(bankAccount);
+            }
+        }
+
+        return bankAccounts;
+    }
+
+    private RawBankAccount obtainBankAccountFromHtmlTableRow(Element row) {
+        // skip title rows
+        if (row.children().size() != 4) {
+            return null;
+        }
+        // skip header
+        if (row.hasClass("td-header")) {
+            return null;
+        }
+
+        String onclick = row.child(0).child(0).attr("onclick");
+        Matcher matcher = PATTERN_MATCH_BANK_ACCOUNT_ID.matcher(onclick);
+        if (!matcher.find()) {
+            throw new ParseException("can't find bank account id in " + onclick);
+        }
+
+        return new RawBankAccount()
+                .setServerId(matcher.group(1))
+                .setName(row.child(0).text())
+                .setIBAN(row.child(1).text())
+                .setCurrency(row.child(2).text())
+                .setBalance(Convert.strToFloat(row.child(3).text()))
+                .setAvailableBalance(Convert.strToFloat(row.child(3).text()));
+    }
+
+    private boolean checkLoggedIn(Document doc) {
+        Elements sup_links = doc.getElementsByClass("supplemental_links");
+        if (sup_links == null || sup_links.size() == 0) {
+            throw new ParseException("getBankAccounts: can't find .supplemental_links");
+        }
+        for (Element sup_link : sup_links) {
+            Elements exits = sup_link.getElementsContainingText("Log Out");
+            if (exits != null && exits.size() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
