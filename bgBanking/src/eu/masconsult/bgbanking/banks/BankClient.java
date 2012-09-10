@@ -37,8 +37,11 @@ public interface BankClient {
      * @throws ParseException in case some or all received data was not
      *             understandable. This may indicate server-side change and thus
      *             a new version of the client should be implemented.
+     * @throws CaptchaException in case a captcha is required to verify human
+     *             being
      */
-    String authenticate(String username, String password) throws IOException, ParseException;
+    String authenticate(String username, String password) throws IOException, ParseException,
+            CaptchaException;
 
     /**
      * Retrieves all accounts with their sums

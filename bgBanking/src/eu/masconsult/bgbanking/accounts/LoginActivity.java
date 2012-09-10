@@ -54,6 +54,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
 
     private static final String TAG = BankingApplication.TAG + "LoginAct";
 
+    public static final String KEY_CAPTCHA_URI = "captcha uri";
+
     /**
      * Sync period in seconds, currently every 8 hours
      */
@@ -88,6 +90,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
         Intent intent = getIntent();
         username = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         accountType = intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+        // TODO handle captcha
 
         bank = Bank.fromAccountType(this, accountType);
         requestNewAccount = username == null;
@@ -188,6 +191,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
             protected String doInBackground(String... params) {
                 try {
                     return bank.getClient().authenticate(params[0], params[1]);
+                    // TODO handle captcha exception
                 } catch (Exception e) {
                     Log.e(TAG, "authentication failed", e);
                     return null;

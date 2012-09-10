@@ -50,6 +50,7 @@ import android.net.UrlQuerySanitizer;
 import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.banks.BankClient;
+import eu.masconsult.bgbanking.banks.CaptchaException;
 import eu.masconsult.bgbanking.banks.RawBankAccount;
 import eu.masconsult.bgbanking.utils.Convert;
 
@@ -70,6 +71,8 @@ public class DskClient implements BankClient {
     private static final String AUTH_XML_ID = XML_ID_PREFIX + ".processlogin";
     /** URI for retrieving bank account */
     private static final String LIST_ACCOUNTS_XML_ID = XML_ID_PREFIX + "01Individuals/02Accounts/";
+    /** URI for retrieving captcha */
+    private static final String CAPTCHA_XML_ID = XML_ID_PREFIX + ".CaptchaImage";
 
     /** POST parameter name for the user's account name */
     private static final String PARAM_USERNAME = "userName";
@@ -104,7 +107,7 @@ public class DskClient implements BankClient {
 
     @Override
     public String authenticate(String username, String password) throws IOException,
-            ParseException {
+            ParseException, CaptchaException {
         final HttpResponse resp;
         final ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(PARAM_USERNAME, username));
@@ -155,6 +158,16 @@ public class DskClient implements BankClient {
                     return null;
                 } else {
                     // TODO handle captcha
+                    Elements captcha = doc.select("input[name=captcha_hkey]");
+                    if (captcha != null && captcha.size() == 1) {
+                        String captchaHash = captcha.first().attr("value");
+                        String captchaUri = BASE_URL + "?" + URLEncodedUtils.format(Arrays.asList(
+                                new BasicNameValuePair(XML_ID, CAPTCHA_XML_ID),
+                                new BasicNameValuePair("captcha_key", captchaHash)
+                                ),
+                                ENCODING);
+                        throw new CaptchaException(captchaUri);
+                    }
                     throw new ParseException("no user_id or session_id: " + action);
                 }
             }
