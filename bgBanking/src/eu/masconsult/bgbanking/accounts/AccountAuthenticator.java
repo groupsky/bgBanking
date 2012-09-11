@@ -23,6 +23,7 @@ import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_ERROR_CODE;
 import static android.accounts.AccountManager.KEY_ERROR_MESSAGE;
 import static android.accounts.AccountManager.KEY_INTENT;
+import static eu.masconsult.bgbanking.accounts.LoginActivity.KEY_CAPTCHA_URI;
 
 import java.io.IOException;
 
@@ -40,6 +41,7 @@ import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.Constants;
 import eu.masconsult.bgbanking.banks.Bank;
+import eu.masconsult.bgbanking.banks.CaptchaException;
 
 /**
  */
@@ -125,6 +127,12 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             return bundle;
         } catch (IOException e) {
             throw new NetworkErrorException(e);
+        } catch (CaptchaException e) {
+            // We need human to verify captcha
+            final Bundle bundle = new Bundle();
+            bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+            intent.putExtra(KEY_CAPTCHA_URI, e.getCaptchaUri());
+            return bundle;
         }
     }
 
