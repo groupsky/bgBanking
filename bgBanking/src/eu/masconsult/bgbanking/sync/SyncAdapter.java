@@ -36,6 +36,7 @@ import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.Constants;
 import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.banks.RawBankAccount;
+import eu.masconsult.bgbanking.platform.BankAccountManager;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
@@ -79,9 +80,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             List<RawBankAccount> bankAccounts = bank.getClient().getBankAccounts(authToken);
 
             Log.d(TAG, "Received " + bankAccounts.size() + " bank accounts");
-            for (RawBankAccount bankAccount : bankAccounts) {
-                Log.v(TAG, "Received " + bankAccount);
-            }
+            BankAccountManager.updateAccounts(context, account, bankAccounts);
 
             syncResult.stats.numEntries += bankAccounts.size();
 

@@ -29,6 +29,7 @@ final public class RawBankAccount {
     private String currency;
     private float balance;
     private float availableBalance;
+    private String lastTransaction;
 
     public String getServerId() {
         return serverId;
@@ -84,11 +85,20 @@ final public class RawBankAccount {
         return this;
     }
 
+    public String getLastTransaction() {
+        return lastTransaction;
+    }
+
+    public RawBankAccount setLastTransaction(String lastTransaction) {
+        this.lastTransaction = lastTransaction;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "RawBankAccount [serverId=" + serverId + ", name=" + name + ", iban=" + iban
                 + ", currency=" + currency + ", balance=" + balance + ", availableBalance="
-                + availableBalance + "]";
+                + availableBalance + ", lastTransaction=" + lastTransaction + "]";
     }
 
 }
