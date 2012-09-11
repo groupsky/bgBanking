@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package eu.masconsult.bgbanking.activity;
+package eu.masconsult.bgbanking.activity.fragment;
 
 import android.accounts.AccountManager;
 import android.app.Dialog;

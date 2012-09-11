@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <!-- to enable automatic syncing -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    
+    <!-- nedded for manual sync -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 
     <!-- to redirect for new account -->
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />

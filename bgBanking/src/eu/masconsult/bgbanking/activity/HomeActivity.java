@@ -19,6 +19,9 @@ package eu.masconsult.bgbanking.activity;
 import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import eu.masconsult.bgbanking.activity.fragment.AccountsListFragment;
+import eu.masconsult.bgbanking.activity.fragment.ChooseAccountTypeFragment;
 import eu.masconsult.bgbanking.banks.Bank;
 
 public class HomeActivity extends FragmentActivity {
@@ -26,12 +29,21 @@ public class HomeActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         checkForLoggedAccounts();
+
+        FragmentManager fm = getSupportFragmentManager();
+
+        // Create the list fragment and add it as our sole content.
+        if (fm.findFragmentById(android.R.id.content) == null) {
+            AccountsListFragment list = new AccountsListFragment();
+            fm.beginTransaction().add(android.R.id.content, list).commit();
+        }
     }
 
     protected void checkForLoggedAccounts() {
