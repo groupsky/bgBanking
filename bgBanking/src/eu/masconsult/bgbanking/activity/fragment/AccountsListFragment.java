@@ -16,6 +16,8 @@
 
 package eu.masconsult.bgbanking.activity.fragment;
 
+import java.util.ArrayList;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
@@ -57,7 +59,7 @@ public class AccountsListFragment extends ListFragment implements
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
 
-    private Account[] mAccounts;
+    final ArrayList<Account> mAccounts = new ArrayList<Account>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -82,10 +84,9 @@ public class AccountsListFragment extends ListFragment implements
         AccountManager accountManager = AccountManager.get(getActivity());
         Bank[] banks = Bank.values();
         for (Bank bank : banks) {
-            mAccounts = accountManager.getAccountsByType(bank.getAccountType(getActivity()));
-            int idx = 0;
-            for (Account account : mAccounts) {
-
+            Account[] accounts = accountManager.getAccountsByType(bank
+                    .getAccountType(getActivity()));
+            for (Account account : accounts) {
                 TextView view = (TextView) getActivity().getLayoutInflater().inflate(
                         R.layout.row_bank_account_header,
                         null);
@@ -95,10 +96,14 @@ public class AccountsListFragment extends ListFragment implements
                 mAdapter.addAdapter(new BankAccountsAdapter(getActivity(),
                         R.layout.row_bank_account,
                         null, 0));
+
+                int idx = mAccounts.size();
+                mAccounts.add(idx, account);
                 getLoaderManager().initLoader(idx, null, this);
-                idx++;
             }
         }
+
+        Log.v(TAG, "found " + mAccounts.size() + " accounts");
     }
 
     static String formatIBAN(String string) {
@@ -167,13 +172,16 @@ public class AccountsListFragment extends ListFragment implements
         // currently filtering.
         Uri baseUri = BankingContract.BankAccount.CONTENT_URI;
 
+        Account account = mAccounts.get(id);
+        Log.v(TAG, "creating cursor loader for account: " + account);
+
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
         return new CursorLoader(getActivity(), baseUri, ACCOUNTS_SUMMARY_PROJECTION,
                 BankingContract.BankAccount.ACCOUNT_NAME
                         + "=? AND " + BankingContract.BankAccount.ACCOUNT_TYPE + "=?",
                 new String[] {
-                        mAccounts[id].name, mAccounts[id].type
+                        account.name, account.type
                 }, BankingContract.BankAccount.COLUMN_NAME_IBAN + " COLLATE LOCALIZED ASC");
     }
 
