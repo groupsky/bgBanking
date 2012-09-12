@@ -48,7 +48,7 @@ public class BankingProvider extends ContentProvider {
     /**
      * The database version
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     /*
      * Constants used by the Uri matcher to choose an action based on the
@@ -111,13 +111,12 @@ public class BankingProvider extends ContentProvider {
             db.execSQL("CREATE TABLE " + BankingContract.BankAccount.TABLE_NAME + " ("
                     + BaseColumns._ID + " INTEGER PRIMARY KEY,"
                     + BankingContract.BankAccount.ACCOUNT_TYPE + " TEXT NOT NULL,"
-                    + BankingContract.BankAccount.ACCOUNT_NAME + " TEXT,"
-                    + BankingContract.BankAccount.COLUMN_NAME_IBAN + " TEXT NOT NULL UNIQUE,"
-                    + BankingContract.BankAccount.COLUMN_NAME_CURRENCY + " TEXT NULL,"
-                    + BankingContract.BankAccount.COLUMN_NAME_BALANCE + " FLOAT NULL,"
-                    + BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE + " FLOAT NULL,"
-                    + BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE
-                    + " TEXT NULL"
+                    + BankingContract.BankAccount.ACCOUNT_NAME + " TEXT NOT NULL,"
+                    + BankingContract.BankAccount.COLUMN_NAME_IBAN + " TEXT,"
+                    + BankingContract.BankAccount.COLUMN_NAME_CURRENCY + " TEXT,"
+                    + BankingContract.BankAccount.COLUMN_NAME_BALANCE + " FLOAT,"
+                    + BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE + " FLOAT,"
+                    + BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE + " TEXT"
                     + ");");
             db.execSQL("CREATE INDEX " + BankingContract.BankAccount.TABLE_NAME + "_account ON "
                     + BankingContract.BankAccount.TABLE_NAME + " ("
