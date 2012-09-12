@@ -96,6 +96,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (AuthenticationException e) {
             Log.e(TAG, "AuthenticationException", e);
             if (authToken != null) {
+                Log.d(TAG, "invalidating token: " + account.type + ", " + authToken);
                 accountManager.invalidateAuthToken(account.type, authToken);
             }
             syncResult.stats.numAuthExceptions++;
