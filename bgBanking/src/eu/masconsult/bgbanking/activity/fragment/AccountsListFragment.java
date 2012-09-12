@@ -212,20 +212,26 @@ public class AccountsListFragment extends ListFragment implements
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             TextView name = (TextView) view.findViewById(R.id.name);
-            name.setText(formatIBAN(cursor.getString(cursor
-                    .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_IBAN))));
+            if (name != null) {
+                name.setText(formatIBAN(cursor.getString(cursor
+                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_IBAN))));
+            }
 
             TextView description = (TextView) view.findViewById(R.id.description);
-            description
-                    .setText(cursor.getString(cursor
-                            .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE)));
+            if (description != null) {
+                description
+                        .setText(cursor.getString(cursor
+                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE)));
+            }
 
             TextView sum = (TextView) view.findViewById(R.id.sum);
-            sum.setText(cursor.getString(cursor
-                    .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE))
-                    + " "
-                    + cursor.getString(cursor
-                            .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_CURRENCY)));
+            if (sum != null) {
+                sum.setText(cursor.getString(cursor
+                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE))
+                        + " "
+                        + cursor.getString(cursor
+                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_CURRENCY)));
+            }
         }
     }
 
