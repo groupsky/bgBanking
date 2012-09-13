@@ -39,9 +39,10 @@ public interface BankClient {
      *             a new version of the client should be implemented.
      * @throws CaptchaException in case a captcha is required to verify human
      *             being
+     * @throws AuthenticationException
      */
     String authenticate(String username, String password) throws IOException, ParseException,
-            CaptchaException;
+            CaptchaException, AuthenticationException;
 
     /**
      * Retrieves all accounts with their sums

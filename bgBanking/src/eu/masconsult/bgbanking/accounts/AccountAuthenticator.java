@@ -28,6 +28,7 @@ import static eu.masconsult.bgbanking.accounts.LoginActivity.KEY_CAPTCHA_URI;
 import java.io.IOException;
 
 import org.apache.http.ParseException;
+import org.apache.http.auth.AuthenticationException;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -110,10 +111,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             Log.v(TAG, "obtained auth token " + authToken);
 
             if (authToken == null) {
-                // we need new credentials
-                final Bundle bundle = new Bundle();
-                bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-                return bundle;
+                throw new AuthenticationException("no authToken");
             }
 
             // store the new auth token and return it
@@ -121,17 +119,26 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             intent.putExtra(KEY_AUTHTOKEN, authToken);
             return intent.getExtras();
         } catch (ParseException e) {
+            Log.w(TAG, "ParseException", e);
             Bundle bundle = new Bundle();
             bundle.putInt(KEY_ERROR_CODE, 1);
             bundle.putString(KEY_ERROR_MESSAGE, e.getMessage());
             return bundle;
         } catch (IOException e) {
+            Log.w(TAG, "IOException", e);
             throw new NetworkErrorException(e);
         } catch (CaptchaException e) {
+            Log.w(TAG, "CaptchaException", e);
             // We need human to verify captcha
             final Bundle bundle = new Bundle();
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);
             intent.putExtra(KEY_CAPTCHA_URI, e.getCaptchaUri());
+            return bundle;
+        } catch (AuthenticationException e) {
+            Log.w(TAG, "AuthenticationException", e);
+            // we need new credentials
+            final Bundle bundle = new Bundle();
+            bundle.putParcelable(AccountManager.KEY_INTENT, intent);
             return bundle;
         }
     }

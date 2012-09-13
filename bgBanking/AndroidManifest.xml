@@ -55,7 +55,19 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator_dskbank" />
         </service>
+        <service
+            android:name=".banks.sgexpress.AuthenticationService"
+            android:exported="false"
+            android:process=":auth" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator_sgexpress" />
+        </service>
+        
         <!-- The login activity -->
         <activity
             android:name=".accounts.LoginActivity"
@@ -92,7 +104,18 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter_procreditbank" />
         </service>
+        <service
+            android:name=".banks.sgexpress.SyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter_sgexpress" />
+        </service>
+        
         <!-- The content provider -->
         <provider
             android:name=".provider.BankingProvider"

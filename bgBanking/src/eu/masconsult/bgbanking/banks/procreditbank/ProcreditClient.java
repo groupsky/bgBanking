@@ -19,13 +19,11 @@ package eu.masconsult.bgbanking.banks.procreditbank;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -40,7 +38,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -52,6 +49,7 @@ import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.banks.BankClient;
 import eu.masconsult.bgbanking.banks.RawBankAccount;
 import eu.masconsult.bgbanking.utils.Convert;
+import eu.masconsult.bgbanking.utils.CookieRequestInterceptor;
 
 public class ProcreditClient implements BankClient {
 
@@ -85,8 +83,6 @@ public class ProcreditClient implements BankClient {
     private static final String LOCATION_BAD_AUTH = "/?bad=bad";
     /** HEADER value for location redirect */
     private static final String LOCATION_AUTH_OK = "/";
-    /** Name of cookie header */
-    private static final String COOKIE = "Cookie";
 
     /**
      * Configures the httpClient to connect to the URL provided.
@@ -100,7 +96,7 @@ public class ProcreditClient implements BankClient {
         HttpConnectionParams.setSoTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         HttpClientParams.setRedirecting(params, false);
-        httpClient.addRequestInterceptor(new AuthTokenInterceptor(authToken));
+        httpClient.addRequestInterceptor(new CookieRequestInterceptor(Arrays.asList(authToken)));
         return httpClient;
     }
 
@@ -227,19 +223,5 @@ public class ProcreditClient implements BankClient {
                 .setCurrency(cells.get(1).text())
                 .setBalance(Convert.strToFloat(cells.get(4).text()))
                 .setAvailableBalance(Convert.strToFloat(cells.get(5).text()));
-    }
-
-    private static final class AuthTokenInterceptor implements HttpRequestInterceptor {
-        private final String authtoken;
-
-        private AuthTokenInterceptor(String authtoken) {
-            this.authtoken = authtoken;
-        }
-
-        @Override
-        public void process(HttpRequest request, HttpContext context) throws HttpException,
-                IOException {
-            request.setHeader(COOKIE, authtoken);
-        }
     }
 }

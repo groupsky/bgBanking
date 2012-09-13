@@ -22,6 +22,7 @@ import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.dskbank.DskClient;
 import eu.masconsult.bgbanking.banks.procreditbank.ProcreditClient;
+import eu.masconsult.bgbanking.banks.sgexpress.SGExpressClient;
 
 public enum Bank {
 
@@ -36,7 +37,13 @@ public enum Bank {
             R.string.bank_account_type_procreditbank,
             R.drawable.ic_bankicon_procreditbank,
             R.string.bank_name_procreditbank,
-            ProcreditClient.class);
+            ProcreditClient.class),
+    // Societe Generale ExpressBank
+    SGExpressBank(
+            R.string.bank_account_type_sgexpress,
+            R.drawable.ic_bankicon_sgexpress,
+            R.string.bank_name_sgexpress,
+            SGExpressClient.class);
 
     private static final String TAG = BankingApplication.TAG + "Bank";
 

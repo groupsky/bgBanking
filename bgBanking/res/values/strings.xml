@@ -29,6 +29,11 @@
     <skip />
     <string name="bank_name_procreditbank">ProCredit Bank</string>
     <string name="bank_account_type_procreditbank">eu.masconsult.bgbanking.procredit</string>
+
+    <!-- SGExpressBank strings -->
+    <skip />
+    <string name="bank_name_sgexpress">SG Express Bank</string>
+    <string name="bank_account_type_sgexpress">eu.masconsult.bgbanking.sgexpress</string>
     
     <!-- Login activity strings -->
     <skip />
