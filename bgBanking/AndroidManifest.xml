@@ -16,10 +16,15 @@
 
     <!-- to get logged accounts -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    
+    <!-- to retrieve data -->
     <uses-permission android:name="android.permission.INTERNET" />
     
     <!-- to read stored authToken -->
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    
+    <!-- to be notified when network change -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-sdk
         android:minSdkVersion="8"

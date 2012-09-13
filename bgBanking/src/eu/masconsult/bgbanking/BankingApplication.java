@@ -16,10 +16,31 @@
 
 package eu.masconsult.bgbanking;
 
+import org.acra.ACRA;
+import org.acra.annotation.ReportsCrashes;
+
 import android.app.Application;
 
+import com.zubhium.ZubhiumSDK;
+
+@ReportsCrashes(formUri = "https://api.zubhium.com/api2/acra/?secret_key=app_secret_key", formKey = "")
 public class BankingApplication extends Application {
 
     public static final String TAG = "bgB.";
 
+    ZubhiumSDK zubhiumSDK;
+
+    @Override
+    public void onCreate() {
+        ACRA.init(this);
+
+        super.onCreate();
+
+        zubhiumSDK = ZubhiumSDK.getZubhiumSDKInstance(this, getString(R.string.zubhium_key));
+        zubhiumSDK.enableCrashReporting(false);
+    }
+
+    public ZubhiumSDK getZubhiumSDK() {
+        return zubhiumSDK;
+    }
 }

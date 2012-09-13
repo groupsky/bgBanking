@@ -17,9 +17,14 @@
 package eu.masconsult.bgbanking.activity;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+
+import com.zubhium.ZubhiumSDK;
+
+import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.activity.fragment.AccountsListFragment;
 import eu.masconsult.bgbanking.activity.fragment.ChooseAccountTypeFragment;
 import eu.masconsult.bgbanking.banks.Bank;
@@ -30,6 +35,39 @@ public class HomeActivity extends FragmentActivity {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
 
+        enableZubhiumUpdates(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        disableZubhiumUpdates(this);
+        super.onDestroy();
+    }
+
+    // TODO: extract to some utility class
+    private static void enableZubhiumUpdates(Activity activity) {
+        BankingApplication globalContext = (BankingApplication) activity.getApplicationContext();
+        if (globalContext != null) {
+            ZubhiumSDK sdk = globalContext.getZubhiumSDK();
+            if (sdk != null) {
+                /**
+                 * Lets register kill switch / update receiver Read more :
+                 * https://www.zubhium.com/docs/sendmessage/
+                 */
+                sdk.registerUpdateReceiver(activity);
+            }
+        }
+    }
+
+    // TODO: extract to some utility class
+    private static void disableZubhiumUpdates(Activity activity) {
+        BankingApplication globalContext = (BankingApplication) activity.getApplicationContext();
+        if (globalContext != null) {
+            ZubhiumSDK sdk = globalContext.getZubhiumSDK();
+            if (sdk != null) {
+                sdk.unRegisterUpdateReceiver();
+            }
+        }
     }
 
     @Override
