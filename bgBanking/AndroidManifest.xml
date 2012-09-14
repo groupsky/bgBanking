@@ -25,6 +25,9 @@
 
     <!-- to be notified when network change -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <!-- to check the sync status -->
+    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
 
     <uses-sdk
         android:minSdkVersion="8"

@@ -29,6 +29,7 @@ import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +45,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final boolean NOTIFY_AUTH_FAILURE = true;
 
+    public static final String START_SYNC = "eu.masconsult.bgbanking.sync.start";
+
+    public static final String STOP_SYNC = "eu.masconsult.bgbanking.sync.stop";
+
     private Context context;
 
     private AccountManager accountManager;
@@ -58,6 +63,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
             ContentProviderClient provider, SyncResult syncResult) {
         Log.v(TAG, "onPerformSync(): " + account + ", " + authority);
+
+        // notify we are starting to perform sync
+        context.sendBroadcast(new Intent().setAction(START_SYNC));
 
         Bank bank = Bank.fromAccountType(context, account.type);
         if (bank == null) {
@@ -104,6 +112,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "ParseException", e);
             syncResult.stats.numParseExceptions++;
         }
+
+        // notify we finished performing sync
+        context.sendBroadcast(new Intent().setAction(STOP_SYNC));
     }
 
 }

@@ -16,15 +16,22 @@
 
 package eu.masconsult.bgbanking.activity;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.zubhium.ZubhiumSDK;
 
@@ -33,14 +40,36 @@ import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.activity.fragment.AccountsListFragment;
 import eu.masconsult.bgbanking.activity.fragment.ChooseAccountTypeFragment;
 import eu.masconsult.bgbanking.banks.Bank;
+import eu.masconsult.bgbanking.provider.BankingContract;
+import eu.masconsult.bgbanking.sync.SyncAdapter;
 
 public class HomeActivity extends FragmentActivity {
+
+    private static final String TAG = BankingApplication.TAG + "HomeActivity";
+
+    final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (SyncAdapter.START_SYNC.equals(intent.getAction())) {
+                syncStateChanged(true);
+            } else if (SyncAdapter.STOP_SYNC.equals(intent.getAction())) {
+                syncStateChanged(false);
+            }
+        }
+    };
+
+    private AccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
 
         enableZubhiumUpdates(this);
+
+        accountManager = AccountManager.get(this);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     }
 
     @Override
@@ -89,8 +118,19 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.START_SYNC);
+        intentFilter.addAction(SyncAdapter.STOP_SYNC);
+        registerReceiver(syncReceiver, intentFilter);
+
+        syncStateChanged(isSyncActive());
+    }
+
     protected void checkForLoggedAccounts() {
-        AccountManager accountManager = AccountManager.get(this);
         Bank[] banks = Bank.values();
         String[] accountTypes = new String[banks.length];
 
@@ -129,5 +169,23 @@ public class HomeActivity extends FragmentActivity {
         });
 
         return true;
+    }
+
+    boolean isSyncActive() {
+        for (Bank bank : Bank.values()) {
+            for (Account account : accountManager.getAccountsByType(bank.getAccountType(this))) {
+                if (ContentResolver.isSyncActive(account, BankingContract.AUTHORITY)) {
+                    Log.v(TAG, bank + " is syncing");
+                    return true;
+                }
+            }
+        }
+        Log.v(TAG, "nothing is syncing");
+        return false;
+    }
+
+    void syncStateChanged(boolean syncActive) {
+        Log.v(TAG, "syncStateChanged: " + syncActive);
+        setProgressBarIndeterminateVisibility(syncActive);
     }
 }
