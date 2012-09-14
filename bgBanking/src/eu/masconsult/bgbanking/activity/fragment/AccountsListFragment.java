@@ -20,6 +20,8 @@ import java.util.ArrayList;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,7 +51,7 @@ import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.provider.BankingContract;
 
 public class AccountsListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, OnAccountsUpdateListener {
 
     protected static final String TAG = BankingApplication.TAG + "AccountsListFragment";
 
@@ -60,6 +62,8 @@ public class AccountsListFragment extends ListFragment implements
     String mCurFilter;
 
     final ArrayList<Account> mAccounts = new ArrayList<Account>();
+
+    private AccountManager accountManager;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -78,10 +82,11 @@ public class AccountsListFragment extends ListFragment implements
 
         // Start out with a progress indicator.
         setListShown(false);
+    }
 
+    private void populateList() {
         // Prepare the loader. Either re-connect with an existing one,
         // or start a new one.
-        AccountManager accountManager = AccountManager.get(getActivity());
         Bank[] banks = Bank.values();
         for (Bank bank : banks) {
             Account[] accounts = accountManager.getAccountsByType(bank
@@ -104,6 +109,24 @@ public class AccountsListFragment extends ListFragment implements
         }
 
         Log.v(TAG, "found " + mAccounts.size() + " accounts");
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        Log.v(TAG, "onAttach");
+
+        super.onAttach(activity);
+
+        accountManager = AccountManager.get(getActivity());
+        accountManager.addOnAccountsUpdatedListener(this, null, true);
+    }
+
+    @Override
+    public void onDetach() {
+        accountManager.removeOnAccountsUpdatedListener(this);
+        accountManager = null;
+
+        super.onDetach();
     }
 
     static String formatIBAN(String string) {
@@ -249,5 +272,10 @@ public class AccountsListFragment extends ListFragment implements
             return pieces.get(index);
         }
 
+    }
+
+    @Override
+    public void onAccountsUpdated(Account[] accounts) {
+        populateList();
     }
 }
