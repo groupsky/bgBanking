@@ -240,6 +240,11 @@ public class AccountsListFragment extends ListFragment implements
         getCursorAdapter(loader).swapCursor(null);
     }
 
+    @Override
+    public void onAccountsUpdated(Account[] accounts) {
+        populateList();
+    }
+
     private static final class BankAccountsAdapter extends ResourceCursorAdapter {
         private BankAccountsAdapter(Context context, int layout, Cursor c, int flags) {
             super(context, layout, c, flags);
@@ -277,10 +282,5 @@ public class AccountsListFragment extends ListFragment implements
             return pieces.get(index);
         }
 
-    }
-
-    @Override
-    public void onAccountsUpdated(Account[] accounts) {
-        populateList();
     }
 }
