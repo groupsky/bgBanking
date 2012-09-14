@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <!-- to enable automatic syncing -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    
+
     <!-- nedded for manual sync -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
 
@@ -16,13 +16,13 @@
 
     <!-- to get logged accounts -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    
+
     <!-- to retrieve data -->
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
     <!-- to read stored authToken -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    
+
     <!-- to be notified when network change -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -31,6 +31,7 @@
         android:targetSdkVersion="15" />
 
     <application
+        android:name=".BankingApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -72,7 +73,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator_sgexpress" />
         </service>
-        
+
         <!-- The login activity -->
         <activity
             android:name=".accounts.LoginActivity"
@@ -120,7 +121,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter_sgexpress" />
         </service>
-        
+
         <!-- The content provider -->
         <provider
             android:name=".provider.BankingProvider"
@@ -128,6 +129,7 @@
             android:exported="false" >
         </provider>
 
+        <!-- The UI -->
         <activity android:name=".activity.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -18,6 +18,7 @@ package eu.masconsult.bgbanking.activity;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -45,28 +46,28 @@ public class HomeActivity extends FragmentActivity {
     }
 
     // TODO: extract to some utility class
+    private static ZubhiumSDK getZubhiumSDK(Context context) {
+        BankingApplication globalContext = (BankingApplication) context.getApplicationContext();
+        return globalContext != null ? globalContext.getZubhiumSDK() : null;
+    }
+
+    // TODO: extract to some utility class
     private static void enableZubhiumUpdates(Activity activity) {
-        BankingApplication globalContext = (BankingApplication) activity.getApplicationContext();
-        if (globalContext != null) {
-            ZubhiumSDK sdk = globalContext.getZubhiumSDK();
-            if (sdk != null) {
-                /**
-                 * Lets register kill switch / update receiver Read more :
-                 * https://www.zubhium.com/docs/sendmessage/
-                 */
-                sdk.registerUpdateReceiver(activity);
-            }
+        ZubhiumSDK sdk = getZubhiumSDK(activity);
+        if (sdk != null) {
+            /**
+             * Lets register kill switch / update receiver Read more :
+             * https://www.zubhium.com/docs/sendmessage/
+             */
+            sdk.registerUpdateReceiver(activity);
         }
     }
 
     // TODO: extract to some utility class
     private static void disableZubhiumUpdates(Activity activity) {
-        BankingApplication globalContext = (BankingApplication) activity.getApplicationContext();
-        if (globalContext != null) {
-            ZubhiumSDK sdk = globalContext.getZubhiumSDK();
-            if (sdk != null) {
-                sdk.unRegisterUpdateReceiver();
-            }
+        ZubhiumSDK sdk = getZubhiumSDK(activity);
+        if (sdk != null) {
+            sdk.unRegisterUpdateReceiver();
         }
     }
 
