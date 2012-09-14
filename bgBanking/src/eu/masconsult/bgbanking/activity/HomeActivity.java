@@ -22,10 +22,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.zubhium.ZubhiumSDK;
 
 import eu.masconsult.bgbanking.BankingApplication;
+import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.activity.fragment.AccountsListFragment;
 import eu.masconsult.bgbanking.activity.fragment.ChooseAccountTypeFragment;
 import eu.masconsult.bgbanking.banks.Bank;
@@ -99,8 +103,31 @@ public class HomeActivity extends FragmentActivity {
         }
 
         if (!hasAccounts) {
-            ChooseAccountTypeFragment accountTypesFragment = new ChooseAccountTypeFragment();
-            accountTypesFragment.show(getSupportFragmentManager(), "AccountsDialog");
+            addAccount();
         }
+    }
+
+    void addAccount() {
+        ChooseAccountTypeFragment accountTypesFragment = new ChooseAccountTypeFragment();
+        accountTypesFragment.show(getSupportFragmentManager(), "AccountsDialog");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuItem addAccountItem = menu.add("Add account");
+        addAccountItem.setIcon(R.drawable.ic_menu_add);
+        MenuItemCompat.setShowAsAction(addAccountItem, MenuItemCompat.SHOW_AS_ACTION_NEVER);
+        addAccountItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                addAccount();
+                return true;
+            }
+        });
+
+        return true;
     }
 }
