@@ -175,6 +175,18 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
+        MenuItem sendFeedback = menu.add("Send feedback");
+        sendFeedback.setIcon(R.drawable.ic_menu_start_conversation);
+        MenuItemCompat.setShowAsAction(sendFeedback, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+        sendFeedback.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                getZubhiumSDK(HomeActivity.this).openFeedbackDialog(HomeActivity.this);
+                return true;
+            }
+        });
+
         return true;
     }
 
