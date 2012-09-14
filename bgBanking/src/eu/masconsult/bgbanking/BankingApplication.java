@@ -23,8 +23,11 @@ import android.app.Application;
 
 import com.zubhium.ZubhiumSDK;
 
-@ReportsCrashes(formUri = "https://api.zubhium.com/api2/acra/?secret_key=app_secret_key", formKey = "")
+@ReportsCrashes(formUri = "https://api.zubhium.com/api2/acra/?secret_key="
+        + BankingApplication.ZUBHIUM_KEY, formKey = "")
 public class BankingApplication extends Application {
+
+    public static final String ZUBHIUM_KEY = "9255bd370be436c97ed86ad665a322";
 
     public static final String TAG = "bgB.";
 
@@ -36,7 +39,7 @@ public class BankingApplication extends Application {
 
         super.onCreate();
 
-        zubhiumSDK = ZubhiumSDK.getZubhiumSDKInstance(this, getString(R.string.zubhium_key));
+        zubhiumSDK = ZubhiumSDK.getZubhiumSDKInstance(this, ZUBHIUM_KEY);
         zubhiumSDK.enableCrashReporting(false);
     }
 

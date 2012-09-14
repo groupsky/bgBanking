@@ -16,10 +16,6 @@
 <resources>
     <string name="app_name">bgBanking</string>
     
-    <!-- some configuration stuff -->
-    <skip/>
-    <string name="zubhium_key">9255bd370be436c97ed86ad665a322</string>
-    
     <!-- Authority type -->
     <skip/>
     <string name="authority_type">eu.masconsult.bgbanking</string>
