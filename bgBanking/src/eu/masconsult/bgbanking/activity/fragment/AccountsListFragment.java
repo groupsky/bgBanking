@@ -67,6 +67,7 @@ public class AccountsListFragment extends ListFragment implements
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.v(TAG, "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
 
         // Give some text to display if there is no data. In a real
@@ -149,6 +150,10 @@ public class AccountsListFragment extends ListFragment implements
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 AccountManager accountManager = AccountManager.get(getActivity());
+                if (accountManager == null) {
+                    return false;
+                }
+
                 Bank[] banks = Bank.values();
                 for (Bank bank : banks) {
                     for (Account account : accountManager.getAccountsByType(bank
