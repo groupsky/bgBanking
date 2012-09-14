@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.masconsult.bgbanking"
-    android:versionCode="1"
+    android:versionCode="999"
     android:versionName="0.2-SNAPSHOT" >
 
     <!-- We need this to be able to create accounts in AccountManager and retrieve stored password -->
