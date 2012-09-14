@@ -130,6 +130,13 @@ public class HomeActivity extends FragmentActivity {
         syncStateChanged(isSyncActive());
     }
 
+    @Override
+    protected void onPause() {
+        unregisterReceiver(syncReceiver);
+
+        super.onPause();
+    }
+
     protected void checkForLoggedAccounts() {
         Bank[] banks = Bank.values();
         String[] accountTypes = new String[banks.length];
