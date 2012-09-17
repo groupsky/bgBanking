@@ -20,6 +20,15 @@
 #}
 
 
+#To remove debug logs:
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** w(...);
+}
+
+
+
 
 ## Zubhium
 -dontwarn com.zubhium.* 
