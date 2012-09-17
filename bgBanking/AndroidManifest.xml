@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.masconsult.bgbanking"
-    android:versionCode="999"
+    android:versionCode="1"
     android:versionName="0.2-SNAPSHOT" >
 
     <!-- We need this to be able to create accounts in AccountManager and retrieve stored password -->
@@ -76,7 +76,19 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator_sgexpress" />
         </service>
+        <service
+            android:name=".banks.fibank.my.AuthenticationService"
+            android:exported="false"
+            android:process=":auth" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator_fibank_my" />
+        </service>
+        
         <!-- The login activity -->
         <activity
             android:name=".accounts.LoginActivity"
@@ -124,7 +136,18 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter_sgexpress" />
         </service>
+        <service
+            android:name=".banks.fibank.my.SyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter_fibank_my" />
+        </service>
+        
         <!-- The content provider -->
         <provider
             android:name=".provider.BankingProvider"

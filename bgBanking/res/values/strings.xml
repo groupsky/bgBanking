@@ -34,6 +34,11 @@
     <skip />
     <string name="bank_name_sgexpress">SG Express Bank</string>
     <string name="bank_account_type_sgexpress">eu.masconsult.bgbanking.sgexpress</string>
+
+    <!-- FIBank strings -->
+    <skip />
+    <string name="bank_name_fibank_my">My FIBank</string>
+    <string name="bank_account_type_fibank_my">eu.masconsult.bgbanking.fibank.my</string>
     
     <!-- Login activity strings -->
     <skip />
