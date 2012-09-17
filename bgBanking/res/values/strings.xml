@@ -39,6 +39,8 @@
     <skip />
     <string name="bank_name_fibank_my">My FIBank</string>
     <string name="bank_account_type_fibank_my">eu.masconsult.bgbanking.fibank.my</string>
+    <string name="bank_name_fibank_ebanking">E-FIBank</string>
+    <string name="bank_account_type_fibank_ebanking">eu.masconsult.bgbanking.fibank.ebanking</string>
     
     <!-- Login activity strings -->
     <skip />

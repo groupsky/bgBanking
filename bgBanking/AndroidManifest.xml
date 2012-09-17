@@ -88,6 +88,18 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator_fibank_my" />
         </service>
+        <service
+            android:name=".banks.fibank.ebanking.AuthenticationService"
+            android:exported="false"
+            android:process=":auth" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator_fibank_ebanking" />
+        </service>
         
         <!-- The login activity -->
         <activity
@@ -146,6 +158,17 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter_fibank_my" />
+        </service>
+        <service
+            android:name=".banks.fibank.ebanking.SyncService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter_fibank_ebanking" />
         </service>
         
         <!-- The content provider -->

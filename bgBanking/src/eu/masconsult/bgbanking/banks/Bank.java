@@ -21,6 +21,7 @@ import android.util.Log;
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.dskbank.DskClient;
+import eu.masconsult.bgbanking.banks.fibank.ebanking.EFIBankClient;
 import eu.masconsult.bgbanking.banks.fibank.my.MyFIBankClient;
 import eu.masconsult.bgbanking.banks.procreditbank.ProcreditClient;
 import eu.masconsult.bgbanking.banks.sgexpress.SGExpressClient;
@@ -50,7 +51,13 @@ public enum Bank {
             R.string.bank_account_type_fibank_my,
             R.drawable.ic_bankicon_fibank,
             R.string.bank_name_fibank_my,
-            MyFIBankClient.class);
+            MyFIBankClient.class),
+    // E-FIBank
+    FIBank_EBanking(
+            R.string.bank_account_type_fibank_ebanking,
+            R.drawable.ic_bankicon_fibank,
+            R.string.bank_name_fibank_ebanking,
+            EFIBankClient.class);
 
     private static final String TAG = BankingApplication.TAG + "Bank";
 
