@@ -21,4 +21,18 @@ public class Convert {
     public static float strToFloat(String text) {
         return Float.valueOf(text.trim().replace(',', '.').replace("\u00a0", ""));
     }
+
+    public static String formatIBAN(String string) {
+        if (string == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i = 4;
+        while (i < string.length()) {
+            sb.append(string.substring(i - 4, i)).append(' ');
+            i += 4;
+        }
+        sb.append(string.substring(i - 4));
+        return sb.toString();
+    }
 }

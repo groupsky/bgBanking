@@ -20,7 +20,6 @@ import java.util.List;
 
 import android.accounts.Account;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -43,13 +42,13 @@ public final class BankAccountManager {
         for (final RawBankAccount rawAccount : bankAccounts) {
             // we know that banks don't delete accounts, so we only need to
             // check if we already have the account at our side
-            long id = lookupRawAccount(resolver, rawAccount.getIBAN());
+            long id = lookupRawAccount(resolver, rawAccount.getServerId());
             if (id != 0) {
-                Log.d(TAG, "updating account " + rawAccount.getIBAN());
-                updateAccount(context, resolver, rawAccount, true, id, batchOperation);
+                Log.d(TAG, "updating account " + rawAccount.getServerId());
+                updateAccount(resolver, rawAccount, true, id, batchOperation);
             } else {
-                Log.d(TAG, "adding account " + rawAccount.getIBAN());
-                addAccount(context, account, rawAccount, true, batchOperation);
+                Log.d(TAG, "adding account " + rawAccount.getServerId());
+                addAccount(account, rawAccount, true, batchOperation);
             }
 
             // A sync adapter should batch operations on multiple accounts,
@@ -62,14 +61,14 @@ public final class BankAccountManager {
         batchOperation.execute();
     }
 
-    private static long lookupRawAccount(ContentResolver resolver, String iban) {
+    private static long lookupRawAccount(ContentResolver resolver, String serverId) {
         long id = 0;
         final Cursor c = resolver.query(
                 AccountIdQuery.CONTENT_URI,
                 AccountIdQuery.PROJECTION,
                 AccountIdQuery.SELECTION,
                 new String[] {
-                    String.valueOf(iban)
+                    String.valueOf(serverId)
                 },
                 null);
         try {
@@ -96,15 +95,19 @@ public final class BankAccountManager {
      * @param batchOperation allow us to batch together multiple operations into
      *            a single provider call
      */
-    public static void addAccount(Context context, Account account, RawBankAccount rawAccount,
-            boolean inSync, BatchOperation batchOperation) {
+    public static void addAccount(Account account, RawBankAccount rawAccount, boolean inSync,
+            BatchOperation batchOperation) {
 
         // Put the data in the banking provider
-        final BankAccountOperations contactOp = BankAccountOperations.createNewAccount(
-                context, rawAccount.getIBAN(), account, inSync, batchOperation);
-
-        contactOp.addAccountInfo(rawAccount.getCurrency(), rawAccount.getAvailableBalance(),
-                rawAccount.getBalance(), rawAccount.getLastTransaction());
+        BankAccountOperations
+                .createNewAccount(account, inSync, batchOperation)
+                .setAvailableBalance(rawAccount.getAvailableBalance())
+                .setBalance(rawAccount.getBalance())
+                .setCurrency(rawAccount.getCurrency())
+                .setIBAN(rawAccount.getIBAN())
+                .setName(rawAccount.getName())
+                .setServerId(rawAccount.getServerId())
+                .done();
     }
 
     /**
@@ -120,38 +123,33 @@ public final class BankAccountManager {
      * @param resolver the ContentResolver to use
      * @param rawBankAccount the sample SyncAdapter account object
      * @param inSync is the update part of a client-server sync?
-     * @param rawAccountId the unique Id for this rawAccount in banking provider
+     * @param internalId the unique Id for this rawAccount in banking provider
      * @param batchOperation allow us to batch together multiple operations into
      *            a single provider call
      */
-    public static void updateAccount(Context context, ContentResolver resolver,
-            RawBankAccount rawBankAccount, boolean inSync, long rawAccountId,
+    public static void updateAccount(ContentResolver resolver,
+            RawBankAccount rawBankAccount, boolean inSync, long internalId,
             BatchOperation batchOperation) {
 
         final Cursor c =
                 resolver.query(DataQuery.CONTENT_URI, DataQuery.PROJECTION, DataQuery.SELECTION,
                         new String[] {
-                            String.valueOf(rawAccountId)
+                            String.valueOf(internalId)
                         }, null);
         final BankAccountOperations contactOp = BankAccountOperations.updateExistingContact(
-                context,
-                rawAccountId, inSync, batchOperation);
+                internalId, inSync, batchOperation);
         try {
             // Iterate over the existing rows of data, and update each one
             // with the information we received from the server.
-            while (c.moveToNext()) {
-                final long id = c.getLong(DataQuery.COLUMN_ID);
-                final Uri uri = ContentUris.withAppendedId(
-                        BankingContract.BankAccount.CONTENT_URI, id);
-                contactOp.updateBalance(
-                        uri,
-                        c.getFloat(DataQuery.COLUMN_AVAILABLE_BALANCE),
-                        c.getFloat(DataQuery.COLUMN_BALANCE),
-                        c.getString(DataQuery.COLUMN_LAST_TRANSACTION_DATE),
-                        rawBankAccount.getAvailableBalance(),
-                        rawBankAccount.getBalance(),
-                        rawBankAccount.getLastTransaction());
-            } // while
+            if (c.moveToNext()) {
+                contactOp
+                        .updateAvailableBalance(c.getFloat(DataQuery.COLUMN_AVAILABLE_BALANCE),
+                                rawBankAccount.getAvailableBalance())
+                        .updateBalance(c.getFloat(DataQuery.COLUMN_BALANCE),
+                                rawBankAccount.getBalance())
+                        .updateName(c.getString(DataQuery.COLUMN_NAME), rawBankAccount.getName())
+                        .done();
+            }
         } finally {
             c.close();
         }
@@ -173,7 +171,7 @@ public final class BankAccountManager {
 
         public final static Uri CONTENT_URI = BankingContract.BankAccount.CONTENT_URI;
 
-        public static final String SELECTION = BankingContract.BankAccount.COLUMN_NAME_IBAN
+        public static final String SELECTION = BankingContract.BankAccount.COLUMN_NAME_SERVER_ID
                 + "=?";
     }
 
@@ -187,16 +185,16 @@ public final class BankAccountManager {
 
         public static final String[] PROJECTION =
                 new String[] {
-                        BankingContract.BankAccount._ID,
                         BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE,
                         BankingContract.BankAccount.COLUMN_NAME_BALANCE,
-                        BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE
+                        BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE,
+                        BankingContract.BankAccount.COLUMN_NAME_NAME,
                 };
 
-        public static final int COLUMN_ID = 0;
-        public static final int COLUMN_AVAILABLE_BALANCE = 1;
-        public static final int COLUMN_BALANCE = 2;
-        public static final int COLUMN_LAST_TRANSACTION_DATE = 3;
+        public static final int COLUMN_AVAILABLE_BALANCE = 0;
+        public static final int COLUMN_BALANCE = 1;
+        public static final int COLUMN_LAST_TRANSACTION_DATE = 2;
+        public static final int COLUMN_NAME = 3;
 
         public static final Uri CONTENT_URI = BankingContract.BankAccount.CONTENT_URI;
 

@@ -108,11 +108,27 @@ public class BankingContract {
         /**
          * The default sort order for this table
          */
-        public static final String DEFAULT_SORT_ORDER = "iban";
+        public static final String DEFAULT_SORT_ORDER = "name";
 
         /*
          * Column definitions
          */
+
+        /**
+         * Column name for the name of the bank account
+         * <P>
+         * Type: TEXT
+         * </P>
+         */
+        public static final String COLUMN_NAME_NAME = "name";
+
+        /**
+         * Column name for the server id of the bank account
+         * <P>
+         * Type: TEXT
+         * </P>
+         */
+        public static final String COLUMN_NAME_SERVER_ID = "server_id";
 
         /**
          * Column name for the iban of the bank account

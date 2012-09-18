@@ -49,6 +49,7 @@ import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.provider.BankingContract;
+import eu.masconsult.bgbanking.utils.Convert;
 
 public class AccountsListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnAccountsUpdateListener {
@@ -77,15 +78,15 @@ public class AccountsListFragment extends ListFragment implements
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
 
-        // Create an empty adapter we will use to display the loaded data.
-        mAdapter = new MyMergeAdapter();
-        setListAdapter(mAdapter);
-
         // Start out with a progress indicator.
         setListShown(false);
     }
 
     private void populateList() {
+        // Create an empty adapter we will use to display the loaded data.
+        mAdapter = new MyMergeAdapter();
+        mAccounts.clear();
+
         // Prepare the loader. Either re-connect with an existing one,
         // or start a new one.
         Bank[] banks = Bank.values();
@@ -110,6 +111,7 @@ public class AccountsListFragment extends ListFragment implements
         }
 
         Log.v(TAG, "found " + mAccounts.size() + " accounts");
+        setListAdapter(mAdapter);
     }
 
     @Override
@@ -128,17 +130,6 @@ public class AccountsListFragment extends ListFragment implements
         accountManager = null;
 
         super.onDetach();
-    }
-
-    static String formatIBAN(String string) {
-        StringBuilder sb = new StringBuilder();
-        int i = 4;
-        while (i < string.length()) {
-            sb.append(string.substring(i - 4, i)).append(' ');
-            i += 4;
-        }
-        sb.append(string.substring(i - 4));
-        return sb.toString();
     }
 
     @Override
@@ -186,6 +177,7 @@ public class AccountsListFragment extends ListFragment implements
     static final String[] ACCOUNTS_SUMMARY_PROJECTION = new String[] {
             BankingContract.BankAccount._ID,
             BankingContract.BankAccount.COLUMN_NAME_IBAN,
+            BankingContract.BankAccount.COLUMN_NAME_NAME,
             BankingContract.BankAccount.COLUMN_NAME_CURRENCY,
             BankingContract.BankAccount.COLUMN_NAME_BALANCE,
             BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE,
@@ -210,7 +202,7 @@ public class AccountsListFragment extends ListFragment implements
                         + "=? AND " + BankingContract.BankAccount.ACCOUNT_TYPE + "=?",
                 new String[] {
                         account.name, account.type
-                }, BankingContract.BankAccount.COLUMN_NAME_IBAN + " COLLATE LOCALIZED ASC");
+                }, BankingContract.BankAccount.COLUMN_NAME_NAME + " COLLATE LOCALIZED ASC");
     }
 
     @Override
@@ -254,15 +246,19 @@ public class AccountsListFragment extends ListFragment implements
         public void bindView(View view, Context context, Cursor cursor) {
             TextView name = (TextView) view.findViewById(R.id.name);
             if (name != null) {
-                name.setText(formatIBAN(cursor.getString(cursor
-                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_IBAN))));
+                name.setText(cursor.getString(cursor
+                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_NAME)));
             }
 
             TextView description = (TextView) view.findViewById(R.id.description);
             if (description != null) {
                 description
-                        .setText(cursor.getString(cursor
-                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE)));
+                        .setText(
+                        Convert.formatIBAN(cursor.getString(cursor
+                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_IBAN)))
+                                + " - "
+                                + cursor.getString(cursor
+                                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE)));
             }
 
             TextView sum = (TextView) view.findViewById(R.id.sum);

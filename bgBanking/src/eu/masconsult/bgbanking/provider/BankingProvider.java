@@ -48,7 +48,7 @@ public class BankingProvider extends ContentProvider {
     /**
      * The database version
      */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     /*
      * Constants used by the Uri matcher to choose an action based on the
@@ -112,6 +112,8 @@ public class BankingProvider extends ContentProvider {
                     + BaseColumns._ID + " INTEGER PRIMARY KEY,"
                     + BankingContract.BankAccount.ACCOUNT_TYPE + " TEXT NOT NULL,"
                     + BankingContract.BankAccount.ACCOUNT_NAME + " TEXT NOT NULL,"
+                    + BankingContract.BankAccount.COLUMN_NAME_NAME + " TEXT NOT NULL,"
+                    + BankingContract.BankAccount.COLUMN_NAME_SERVER_ID + " TEXT NOT NULL,"
                     + BankingContract.BankAccount.COLUMN_NAME_IBAN + " TEXT,"
                     + BankingContract.BankAccount.COLUMN_NAME_CURRENCY + " TEXT,"
                     + BankingContract.BankAccount.COLUMN_NAME_BALANCE + " FLOAT,"
