@@ -204,10 +204,8 @@ public class DskClient implements BankClient {
                     + resp.getStatusLine().getReasonPhrase());
         }
 
-        String response = EntityUtils.toString(resp.getEntity());
-        Log.v(TAG, "response = " + response);
-
-        Document doc = Jsoup.parse(response, BASE_URL);
+        HttpEntity entity = resp.getEntity();
+        Document doc = Jsoup.parse(entity.getContent(), "utf-8", BASE_URL);
 
         if (!checkLoggedIn(doc)) {
             throw new AuthenticationException("session expired!");
@@ -230,9 +228,15 @@ public class DskClient implements BankClient {
 
         ArrayList<RawBankAccount> bankAccounts = new ArrayList<RawBankAccount>(rows.size());
 
+        String lastCurrency = null;
         for (Element row : rows) {
             RawBankAccount bankAccount = obtainBankAccountFromHtmlTableRow(row);
             if (bankAccount != null) {
+                if (bankAccount.getCurrency() == null) {
+                    bankAccount.setCurrency(lastCurrency);
+                } else {
+                    lastCurrency = bankAccount.getCurrency();
+                }
                 bankAccounts.add(bankAccount);
             }
         }
