@@ -170,7 +170,7 @@ public class MyFIBankClient implements BankClient {
         return new RawBankAccount()
                 .setServerId(iban)
                 .setIBAN(iban)
-                .setName(iban)
+                .setName(Convert.formatIBAN(iban))
                 .setCurrency(cells.get(1).text())
                 .setAvailableBalance(Convert.strToFloat(cells.get(2).text()))
                 .setBalance(Convert.strToFloat(cells.get(2).text()));
