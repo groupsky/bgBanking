@@ -219,6 +219,8 @@ public class ProcreditClient implements BankClient {
         }
 
         return new RawBankAccount()
+                .setServerId(cells.get(0).text())
+                .setName(Convert.formatIBAN(cells.get(0).text()))
                 .setIBAN(cells.get(0).text())
                 .setCurrency(cells.get(1).text())
                 .setBalance(Convert.strToFloat(cells.get(4).text()))
