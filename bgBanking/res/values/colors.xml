@@ -17,4 +17,7 @@
     <!-- Application colors -->
     <skip/>
     <color name="bg_actionbar">#ff530101</color>
+    <color name="header_bg">#fff6f6f6</color>
+    <color name="header_border">#f0cfa5</color>
+    <color name="list_divider">#E2E2E2</color>
 </resources>

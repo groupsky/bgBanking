@@ -2,38 +2,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dip"
     tools:context=".MainActivity" >
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="BG13 PRCB 9230 1019 3838 30"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/name"
-        android:gravity="bottom"
-        android:text="31.07.12 15:48"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/sum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/name"
-        android:layout_alignParentBottom="true"
-        android:text="12 345.32 BGN"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentTop="true"
+        android:text="123 345.32 BGN"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/sum"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="8dip"
+        android:layout_toLeftOf="@id/sum"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:text="BG13 PRCB 9230 1019 3838 30" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/name"
+        android:ellipsize="middle"
+        android:gravity="bottom"
+        android:singleLine="true"
+        android:text="BG13 PRCB 9230 1019 3838 30"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/last_transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/description"
+        android:ellipsize="middle"
+        android:gravity="bottom"
+        android:singleLine="true"
+        android:text="19.09.12 16:57"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="visible" />
 
 </RelativeLayout>

@@ -16,6 +16,17 @@
 
 package eu.masconsult.bgbanking.activity.fragment;
 
+import static android.provider.BaseColumns._ID;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.ACCOUNT_NAME;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.ACCOUNT_TYPE;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_BALANCE;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_CURRENCY;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_IBAN;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_NAME;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.CONTENT_URI;
+
 import java.util.ArrayList;
 
 import android.accounts.Account;
@@ -32,8 +43,10 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -93,12 +106,22 @@ public class AccountsListFragment extends SherlockListFragment implements
             Account[] accounts = accountManager.getAccountsByType(bank
                     .getAccountType(getActivity()));
             for (Account account : accounts) {
-                TextView view = (TextView) getActivity().getLayoutInflater().inflate(
+                View header = getActivity().getLayoutInflater().inflate(
                         R.layout.row_bank_account_header,
                         null);
-                view.setText(getString(bank.labelRes) + " - " + account.name);
-                view.setCompoundDrawablesWithIntrinsicBounds(bank.iconResource, 0, 0, 0);
-                mAdapter.addView(view);
+                View bank_icon = header.findViewById(R.id.bank_icon);
+                if (bank_icon != null && bank_icon instanceof ImageView) {
+                    ((ImageView) bank_icon).setImageResource(bank.iconResource);
+                }
+                View bank_name = header.findViewById(R.id.bank_name);
+                if (bank_name != null && bank_name instanceof TextView) {
+                    ((TextView) bank_name).setText(bank.labelRes);
+                }
+                View account_name = header.findViewById(R.id.account_name);
+                if (account_name != null && account_name instanceof TextView) {
+                    ((TextView) account_name).setText(account.name);
+                }
+                mAdapter.addView(header);
                 mAdapter.addAdapter(new BankAccountsAdapter(getActivity(),
                         R.layout.row_bank_account,
                         null, 0));
@@ -174,13 +197,13 @@ public class AccountsListFragment extends SherlockListFragment implements
 
     // These are the Contacts rows that we will retrieve.
     static final String[] ACCOUNTS_SUMMARY_PROJECTION = new String[] {
-            BankingContract.BankAccount._ID,
-            BankingContract.BankAccount.COLUMN_NAME_IBAN,
-            BankingContract.BankAccount.COLUMN_NAME_NAME,
-            BankingContract.BankAccount.COLUMN_NAME_CURRENCY,
-            BankingContract.BankAccount.COLUMN_NAME_BALANCE,
-            BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE,
-            BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE,
+            _ID,
+            COLUMN_NAME_IBAN,
+            COLUMN_NAME_NAME,
+            COLUMN_NAME_CURRENCY,
+            COLUMN_NAME_BALANCE,
+            COLUMN_NAME_AVAILABLE_BALANCE,
+            COLUMN_NAME_LAST_TRANSACTION_DATE,
     };
 
     @Override
@@ -189,7 +212,7 @@ public class AccountsListFragment extends SherlockListFragment implements
         // sample only has one Loader, so we don't care about the ID.
         // First, pick the base URI to use depending on whether we are
         // currently filtering.
-        Uri baseUri = BankingContract.BankAccount.CONTENT_URI;
+        Uri baseUri = CONTENT_URI;
 
         Account account = mAccounts.get(id);
         Log.v(TAG, "creating cursor loader for account: " + account);
@@ -197,11 +220,11 @@ public class AccountsListFragment extends SherlockListFragment implements
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
         return new CursorLoader(getActivity(), baseUri, ACCOUNTS_SUMMARY_PROJECTION,
-                BankingContract.BankAccount.ACCOUNT_NAME
-                        + "=? AND " + BankingContract.BankAccount.ACCOUNT_TYPE + "=?",
+                ACCOUNT_NAME
+                        + "=? AND " + ACCOUNT_TYPE + "=?",
                 new String[] {
                         account.name, account.type
-                }, BankingContract.BankAccount.COLUMN_NAME_NAME + " COLLATE LOCALIZED ASC");
+                }, COLUMN_NAME_NAME + " COLLATE LOCALIZED ASC");
     }
 
     @Override
@@ -243,32 +266,57 @@ public class AccountsListFragment extends SherlockListFragment implements
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            TextView name = (TextView) view.findViewById(R.id.name);
-            if (name != null) {
-                name.setText(cursor.getString(cursor
-                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_NAME)));
-            }
+            String name = getFromColumn(cursor, COLUMN_NAME_NAME);
+            setToView(view, R.id.name, name);
 
-            TextView description = (TextView) view.findViewById(R.id.description);
-            if (description != null) {
-                description
-                        .setText(
-                        Convert.formatIBAN(cursor.getString(cursor
-                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_IBAN)))
-                                + " - "
-                                + cursor.getString(cursor
-                                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE)));
+            String iban = Convert.formatIBAN(getFromColumn(cursor, COLUMN_NAME_IBAN));
+            if (TextUtils.equals(name, iban)) {
+                iban = null;
             }
+            setToView(view, R.id.description, iban);
+            setToView(view, R.id.last_transaction,
+                    getFromColumn(cursor, COLUMN_NAME_LAST_TRANSACTION_DATE));
 
-            TextView sum = (TextView) view.findViewById(R.id.sum);
-            if (sum != null) {
-                sum.setText(cursor.getString(cursor
-                        .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_AVAILABLE_BALANCE))
-                        + " "
-                        + cursor.getString(cursor
-                                .getColumnIndex(BankingContract.BankAccount.COLUMN_NAME_CURRENCY)));
+            setToView(view, R.id.sum,
+                    Convert.formatCurrency(
+                            getFromFColumn(cursor, COLUMN_NAME_AVAILABLE_BALANCE),
+                            getFromColumn(cursor, COLUMN_NAME_CURRENCY)));
+        }
+
+        private String getFromColumn(Cursor cursor, String columnName) {
+            int columnIndex = cursor.getColumnIndex(columnName);
+            if (columnIndex != -1) {
+                return cursor.isNull(columnIndex) ? null : cursor
+                        .getString(columnIndex);
+            }
+            return null;
+        }
+
+        private Float getFromFColumn(Cursor cursor, String columnName) {
+            int columnIndex = cursor.getColumnIndex(columnName);
+            if (columnIndex != -1) {
+                return cursor.isNull(columnIndex) ? null : cursor
+                        .getFloat(columnIndex);
+            }
+            return null;
+        }
+
+        private void setToView(View layout, int id, String text) {
+            View view = layout.findViewById(id);
+            if (view == null) {
+                return;
+            }
+            if (!(view instanceof TextView)) {
+                return;
+            }
+            if (TextUtils.isEmpty(text)) {
+                view.setVisibility(View.GONE);
+            } else {
+                view.setVisibility(View.VISIBLE);
+                ((TextView) view).setText(text);
             }
         }
+
     }
 
     private static final class MyMergeAdapter extends MergeAdapter {

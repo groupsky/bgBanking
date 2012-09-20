@@ -16,7 +16,20 @@
 
 package eu.masconsult.bgbanking.utils;
 
+import java.util.HashMap;
+
 public class Convert {
+
+    final static String DEFAULT_CURRENCY_FORMAT = "%2$s %1$1.2f";
+
+    @SuppressWarnings("serial")
+    private static HashMap<String, String> currencyFormats = new HashMap<String, String>() {
+        {
+            put("BGN", "%1$1.2f лв.");
+            put("USD", "€%1$1.2f");
+            put("EUR", "$%1$1.2f");
+        }
+    };
 
     public static float strToFloat(String text) {
         return Float.valueOf(text.trim().replace(',', '.').replace("\u00a0", ""));
@@ -34,5 +47,13 @@ public class Convert {
         }
         sb.append(string.substring(i - 4));
         return sb.toString();
+    }
+
+    public static String formatCurrency(float value, String currency) {
+        String format = currencyFormats.get(currency);
+        if (format == null) {
+            format = DEFAULT_CURRENCY_FORMAT;
+        }
+        return String.format(format, value, currency);
     }
 }
