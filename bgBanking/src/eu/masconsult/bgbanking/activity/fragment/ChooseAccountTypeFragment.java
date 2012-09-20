@@ -19,18 +19,21 @@ package eu.masconsult.bgbanking.activity.fragment;
 import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockDialogFragment;
+
 import eu.masconsult.bgbanking.BankAdapter;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
 
-public class ChooseAccountTypeFragment extends DialogFragment implements OnItemClickListener {
+public class ChooseAccountTypeFragment extends SherlockDialogFragment implements
+        OnItemClickListener {
 
     BankAdapter adapter;
 

@@ -27,22 +27,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 
 import eu.masconsult.bgbanking.BankingApplication;
@@ -51,7 +50,7 @@ import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.provider.BankingContract;
 import eu.masconsult.bgbanking.utils.Convert;
 
-public class AccountsListFragment extends ListFragment implements
+public class AccountsListFragment extends SherlockListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnAccountsUpdateListener {
 
     protected static final String TAG = BankingApplication.TAG + "AccountsListFragment";
@@ -136,7 +135,7 @@ public class AccountsListFragment extends ListFragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem refreshItem = menu.add("Refresh");
         refreshItem.setIcon(R.drawable.ic_menu_refresh);
-        MenuItemCompat.setShowAsAction(refreshItem, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         refreshItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

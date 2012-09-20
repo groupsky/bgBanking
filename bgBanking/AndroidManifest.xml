@@ -179,7 +179,7 @@
         </provider>
 
         <!-- The UI -->
-        <activity android:name=".activity.HomeActivity" >
+        <activity android:name=".activity.HomeActivity" android:theme="@style/Theme.Sherlock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

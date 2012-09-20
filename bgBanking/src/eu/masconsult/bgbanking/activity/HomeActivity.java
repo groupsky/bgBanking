@@ -25,14 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.zubhium.ZubhiumSDK;
 
 import eu.masconsult.bgbanking.BankingApplication;
@@ -43,7 +42,7 @@ import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.provider.BankingContract;
 import eu.masconsult.bgbanking.sync.SyncAdapter;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends SherlockFragmentActivity {
 
     private static final String TAG = BankingApplication.TAG + "HomeActivity";
 
@@ -165,7 +164,7 @@ public class HomeActivity extends FragmentActivity {
 
         MenuItem addAccountItem = menu.add("Add account");
         addAccountItem.setIcon(R.drawable.ic_menu_add);
-        MenuItemCompat.setShowAsAction(addAccountItem, MenuItemCompat.SHOW_AS_ACTION_NEVER);
+        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         addAccountItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
             @Override
@@ -177,7 +176,7 @@ public class HomeActivity extends FragmentActivity {
 
         MenuItem sendFeedback = menu.add("Send feedback");
         sendFeedback.setIcon(R.drawable.ic_menu_start_conversation);
-        MenuItemCompat.setShowAsAction(sendFeedback, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+        sendFeedback.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         sendFeedback.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
             @Override
