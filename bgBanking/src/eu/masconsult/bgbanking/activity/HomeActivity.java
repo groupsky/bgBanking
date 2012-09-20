@@ -164,7 +164,7 @@ public class HomeActivity extends SherlockFragmentActivity {
 
         MenuItem addAccountItem = menu.add("Add account");
         addAccountItem.setIcon(R.drawable.ic_menu_add);
-        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         addAccountItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
             @Override
