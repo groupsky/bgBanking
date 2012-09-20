@@ -179,7 +179,7 @@
         </provider>
 
         <!-- The UI -->
-        <activity android:name=".activity.HomeActivity" android:theme="@style/Theme.Sherlock">
+        <activity android:name=".activity.HomeActivity" android:theme="@style/Theme.bgBanking" android:icon="@drawable/ic_icon" android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

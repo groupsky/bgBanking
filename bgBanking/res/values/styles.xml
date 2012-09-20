@@ -1,7 +1,7 @@
 <resources>
 
     <style name="AppTheme" parent="android:Theme.Light" />
-    
+
     <style name="LoginActionBarStyle" parent="@android:style/Theme.Holo.NoActionBar">
         <item name="android:background">@null</item>
     </style>
@@ -30,12 +30,14 @@
         <item name="android:textColor">@color/title_color</item>
         <item name="android:clickable">false</item>
     </style>
+
     <style name="NormalText">
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:textSize">@dimen/description_text_size</item>
         <item name="android:textColorLink">?android:textColorPrimary</item>
         <item name="android:lineSpacingExtra">@dimen/description_line_spacing_extra</item>
     </style>
+
     <style name="DescriptionText" parent="@style/NormalText">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -43,6 +45,7 @@
         <item name="android:layout_marginTop">@dimen/description_margin_top</item>
         <item name="android:layout_marginRight">@dimen/description_margin_sides</item>
     </style>
+
     <style name="Button">
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:textSize">20.0dip</item>
@@ -52,6 +55,7 @@
         <item name="android:layout_height">@dimen/button_min_height</item>
         <item name="android:minWidth">@dimen/button_min_width</item>
     </style>
+
     <style name="StackedButtons">
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">fill_parent</item>
@@ -59,14 +63,17 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentBottom">true</item>
     </style>
+
     <style name="BackButton" parent="@style/Button">
         <item name="android:background">@drawable/btn_dir_prev_holo_light</item>
         <item name="android:paddingLeft">30.0dip</item>
     </style>
+
     <style name="NextButton" parent="@style/Button">
         <item name="android:background">@drawable/btn_dir_next_holo_light</item>
         <item name="android:paddingRight">35.0dip</item>
     </style>
+
     <style name="TopDivider">
         <item name="android:background">@color/divider_color</item>
         <item name="android:focusable">false</item>
@@ -76,24 +83,41 @@
         <item name="android:layout_marginTop">@dimen/top_divider_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/top_divider_margin_bottom</item>
     </style>
+
     <style name="PreferenceDivider" parent="@style/TopDivider">
         <item name="android:layout_height">1.0dip</item>
         <item name="android:layout_marginTop">0.0dip</item>
         <item name="android:layout_marginBottom">0.0dip</item>
     </style>
+
     <style name="BottomDivider" parent="@style/TopDivider">
         <item name="android:layout_marginTop">0.0dip</item>
         <item name="android:layout_marginBottom">16.0dip</item>
     </style>
+
     <style name="InputFieldSideView">
         <item name="android:layout_width">0.0dip</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">0.0</item>
     </style>
+
     <style name="InputFieldView">
         <item name="android:layout_width">0.0dip</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1.0</item>
     </style>
-    
+
+    <!-- Application theme -->
+    <skip />
+
+    <style name="Theme.bgBanking" parent="Theme.Sherlock.Light">
+        <item name="actionBarStyle">@style/Widget.bgBanking.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.bgBanking.ActionBar</item>
+    </style>
+
+    <style name="Widget.bgBanking.ActionBar" parent="Widget.Sherlock.Light.ActionBar">
+        <item name="background">@color/bg_actionbar</item>
+        <item name="android:background">@color/bg_actionbar</item>
+    </style>
+
 </resources>

@@ -13,4 +13,8 @@
     <color name="perms_dangerous_grp_color">#ff33b5e5</color>
     <color name="perms_dangerous_perm_color">#ff33b5e5</color>
     <color name="defaultTextColor">#ff868686</color>
+    
+    <!-- Application colors -->
+    <skip/>
+    <color name="bg_actionbar">#ff530101</color>
 </resources>
