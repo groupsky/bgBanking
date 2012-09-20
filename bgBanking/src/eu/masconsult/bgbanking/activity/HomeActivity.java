@@ -69,6 +69,8 @@ public class HomeActivity extends SherlockFragmentActivity {
         accountManager = AccountManager.get(this);
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setIcon(R.drawable.ic_icon);
     }
 
     @Override
