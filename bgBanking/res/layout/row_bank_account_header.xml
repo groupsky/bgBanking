@@ -1,55 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@drawable/bg_list_header"
     android:padding="8dip" >
 
     <ImageView
         android:id="@+id/bank_icon"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_bankicon_procreditbank" />
 
     <TextView
-        android:id="@+id/bank_name"
+        android:id="@+id/account_name"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="8dip"
-        android:gravity="center_vertical"
-        android:text="ProCredit Bank"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/bank_icon"
+        android:text="masconsult"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/primary_text_light"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/bank_name"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="4dip"
-        android:gravity="center_vertical"
-        android:text="("
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/primary_text_light" />
-    
-    <TextView
-        android:id="@+id/account_name"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:text="masconsult"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/bank_icon"
+        android:text="ProCredit Bank"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/primary_text_light" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:text=")"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/primary_text_light" />
-    
-</LinearLayout>
+</RelativeLayout>

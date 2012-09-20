@@ -13,6 +13,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:text="123 345.32 BGN"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 
     <TextView
@@ -25,6 +26,7 @@
         android:layout_toLeftOf="@id/sum"
         android:ellipsize="middle"
         android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="BG13 PRCB 9230 1019 3838 30" />
 
     <TextView
