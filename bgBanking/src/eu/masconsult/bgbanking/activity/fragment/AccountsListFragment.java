@@ -158,7 +158,8 @@ public class AccountsListFragment extends SherlockListFragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem refreshItem = menu.add("Refresh");
         refreshItem.setIcon(R.drawable.ic_menu_refresh);
-        refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         refreshItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

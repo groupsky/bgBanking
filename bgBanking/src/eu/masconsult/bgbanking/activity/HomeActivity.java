@@ -18,21 +18,23 @@ package eu.masconsult.bgbanking.activity;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.zubhium.ZubhiumSDK;
 
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
@@ -64,45 +66,11 @@ public class HomeActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
 
-        enableZubhiumUpdates(this);
-
         accountManager = AccountManager.get(this);
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setIcon(R.drawable.ic_icon);
-    }
-
-    @Override
-    protected void onDestroy() {
-        disableZubhiumUpdates(this);
-        super.onDestroy();
-    }
-
-    // TODO: extract to some utility class
-    private static ZubhiumSDK getZubhiumSDK(Context context) {
-        BankingApplication globalContext = (BankingApplication) context.getApplicationContext();
-        return globalContext != null ? globalContext.getZubhiumSDK() : null;
-    }
-
-    // TODO: extract to some utility class
-    private static void enableZubhiumUpdates(Activity activity) {
-        ZubhiumSDK sdk = getZubhiumSDK(activity);
-        if (sdk != null) {
-            /**
-             * Lets register kill switch / update receiver Read more :
-             * https://www.zubhium.com/docs/sendmessage/
-             */
-            sdk.registerUpdateReceiver(activity);
-        }
-    }
-
-    // TODO: extract to some utility class
-    private static void disableZubhiumUpdates(Activity activity) {
-        ZubhiumSDK sdk = getZubhiumSDK(activity);
-        if (sdk != null) {
-            sdk.unRegisterUpdateReceiver();
-        }
     }
 
     @Override
@@ -166,7 +134,8 @@ public class HomeActivity extends SherlockFragmentActivity {
 
         MenuItem addAccountItem = menu.add("Add account");
         addAccountItem.setIcon(R.drawable.ic_menu_add);
-        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         addAccountItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
             @Override
@@ -179,14 +148,36 @@ public class HomeActivity extends SherlockFragmentActivity {
         MenuItem sendFeedback = menu.add("Send feedback");
         sendFeedback.setIcon(R.drawable.ic_menu_start_conversation);
         sendFeedback.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        sendFeedback.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        sendFeedback.setOnMenuItemClickListener(new
+                MenuItem.OnMenuItemClickListener() {
 
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                getZubhiumSDK(HomeActivity.this).openFeedbackDialog(HomeActivity.this);
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        PackageInfo manager;
+                        try {
+                            manager = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        } catch (NameNotFoundException e) {
+                            manager = new PackageInfo();
+                            manager.versionCode = 0;
+                            manager.versionName = "undef";
+                        }
+                        try {
+                            startActivity(new Intent(Intent.ACTION_SEND)
+                                    .setType("plain/text")
+                                    .putExtra(Intent.EXTRA_EMAIL, new String[] {
+                                            "mobile@masconsult.eu"
+                                    })
+                                    .putExtra(
+                                            Intent.EXTRA_SUBJECT,
+                                            "bgBanking v" + manager.versionName + "-"
+                                                    + manager.versionCode + " feedback"));
+                        } catch (ActivityNotFoundException e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+                    }
+                });
 
         return true;
     }

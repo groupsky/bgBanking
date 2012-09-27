@@ -1,3 +1,6 @@
 [submodule "ActionBarSherlock"]
 	path = ActionBarSherlock
 	url = git@github.com:masconsult/ActionBarSherlock.git
+[submodule "auto-update-apk-client"]
+	path = auto-update-apk-client
+	url = git@github.com:masconsult/auto-update-apk-client.git

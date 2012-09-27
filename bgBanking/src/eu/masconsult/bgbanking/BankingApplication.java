@@ -21,17 +21,17 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 
-import com.zubhium.ZubhiumSDK;
+import com.lazydroid.autoupdateapk.AutoUpdateApk;
 
-@ReportsCrashes(formUri = "https://api.zubhium.com/api2/acra/?secret_key="
-        + BankingApplication.ZUBHIUM_KEY, formKey = "")
+@ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key="
+        + BankingApplication.BUGSENSE_KEY, formKey = "")
 public class BankingApplication extends Application {
 
-    public static final String ZUBHIUM_KEY = "9255bd370be436c97ed86ad665a322";
+    public static final String BUGSENSE_KEY = "2ce1318e";
 
     public static final String TAG = "bgB.";
 
-    ZubhiumSDK zubhiumSDK;
+    AutoUpdateApk autoUpdateSDK;
 
     @Override
     public void onCreate() {
@@ -39,11 +39,6 @@ public class BankingApplication extends Application {
 
         super.onCreate();
 
-        zubhiumSDK = ZubhiumSDK.getZubhiumSDKInstance(this, ZUBHIUM_KEY);
-        zubhiumSDK.enableCrashReporting(false);
-    }
-
-    public ZubhiumSDK getZubhiumSDK() {
-        return zubhiumSDK;
+        autoUpdateSDK = new AutoUpdateApk(this);
     }
 }
