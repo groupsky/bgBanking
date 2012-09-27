@@ -95,7 +95,7 @@
                     android:capitalize="none"
                     android:hint="@string/username"
                     android:imeOptions="actionNext"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:textAppearance="?android:textAppearanceMedium"
