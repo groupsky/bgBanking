@@ -4,3 +4,6 @@
 [submodule "auto-update-apk-client"]
 	path = auto-update-apk-client
 	url = git@github.com:masconsult/auto-update-apk-client.git
+[submodule "malibu"]
+	path = malibu
+	url = git@github.com:malibu-lib/malibu.git

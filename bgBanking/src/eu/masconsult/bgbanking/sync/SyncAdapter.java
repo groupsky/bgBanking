@@ -19,6 +19,7 @@ package eu.masconsult.bgbanking.sync;
 import java.io.IOException;
 import java.util.List;
 
+import org.acra.ACRA;
 import org.apache.http.ParseException;
 import org.apache.http.auth.AuthenticationException;
 
@@ -96,11 +97,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (AuthenticatorException e) {
             Log.e(TAG, "AuthenticatorException", e);
             syncResult.stats.numAuthExceptions++;
+            ACRA.getErrorReporter().handleException(e);
         } catch (OperationCanceledException e) {
             Log.e(TAG, "OperationCanceledExcetpion", e);
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
             syncResult.stats.numIoExceptions++;
+            ACRA.getErrorReporter().handleException(e);
         } catch (AuthenticationException e) {
             Log.e(TAG, "AuthenticationException", e);
             if (authToken != null) {
@@ -111,6 +114,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (ParseException e) {
             Log.e(TAG, "ParseException", e);
             syncResult.stats.numParseExceptions++;
+            ACRA.getErrorReporter().handleException(e);
         }
 
         // notify we finished performing sync
