@@ -30,7 +30,7 @@
 		<echo>Project version: ${manifest.version}</echo>
 	</target>
 	
-	<target name="-rename-output-file" depends="-retrieve-project-version">
+	<target name="-rename-output-file" depends="-retrieve-project-version" if="jenkins-env.BUILD_NUMBER">
 		<pathconvert property="out.final2.file">
 			<path path="${out.final.file}"/>
 			<mapper>
