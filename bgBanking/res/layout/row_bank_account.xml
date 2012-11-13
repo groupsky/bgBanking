@@ -14,7 +14,8 @@
         android:layout_alignParentTop="true"
         android:text="123 345.32 BGN"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/name"
@@ -26,8 +27,9 @@
         android:layout_toLeftOf="@id/sum"
         android:ellipsize="middle"
         android:singleLine="true"
+        android:text="BG12 PRCB 3456 7890 1234 56"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="BG13 PRCB 9230 1019 3838 30" />
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/description"
@@ -39,9 +41,10 @@
         android:ellipsize="middle"
         android:gravity="bottom"
         android:singleLine="true"
-        android:text="BG13 PRCB 9230 1019 3838 30"
+        android:text="BG09 PRCB 8765 4321 0987 65"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="visible" />
+        android:visibility="visible"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/last_transaction"
@@ -55,6 +58,7 @@
         android:singleLine="true"
         android:text="19.09.12 16:57"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="visible" />
+        android:visibility="visible"
+        tools:ignore="HardcodedText" />
 
 </RelativeLayout>
