@@ -21,8 +21,6 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 
-import com.lazydroid.autoupdateapk.AutoUpdateApk;
-
 @ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key="
         + BankingApplication.BUGSENSE_KEY, formKey = "")
 public class BankingApplication extends Application {
@@ -31,14 +29,10 @@ public class BankingApplication extends Application {
 
     public static final String TAG = "bgB.";
 
-    AutoUpdateApk autoUpdateSDK;
-
     @Override
     public void onCreate() {
         ACRA.init(this);
 
         super.onCreate();
-
-        autoUpdateSDK = new AutoUpdateApk(this);
     }
 }
