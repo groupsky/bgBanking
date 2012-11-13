@@ -37,7 +37,9 @@ public class BankAdapter extends ArrayAdapter<Bank> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
         if (rowView == null) {
-            rowView = inflater.inflate(android.R.layout.simple_list_item_1, null);
+            // rowView = inflater.inflate(android.R.layout.simple_list_item_1,
+            // null);
+            rowView = inflater.inflate(R.layout.choose_account_type_item, null);
         }
 
         Bank bank = getItem(position);

@@ -19,6 +19,7 @@ package eu.masconsult.bgbanking.activity.fragment;
 import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,8 @@ public class ChooseAccountTypeFragment extends SherlockDialogFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_bgBanking_Dialog);
 
         Bank[] banks = Bank.values();
         adapter = new BankAdapter(getActivity(), banks);

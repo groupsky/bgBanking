@@ -2,4 +2,11 @@
 
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar" />
 
+    <style name="listItemSmall">
+        <item name="android:textAppearance">?android:attr/textAppearanceListItemSmall</item>
+        <item name="android:paddingLeft">?android:attr/listPreferredItemPaddingLeft</item>
+        <item name="android:paddingRight">?android:attr/listPreferredItemPaddingRight</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
+    </style>
+
 </resources>
