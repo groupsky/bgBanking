@@ -155,6 +155,7 @@ public class HomeActivity extends SherlockFragmentActivity {
                     return false;
                 }
 
+                long cnt = 0;
                 Bank[] banks = Bank.values();
                 for (Bank bank : banks) {
                     for (Account account : accountManager.getAccountsByType(bank
@@ -164,8 +165,11 @@ public class HomeActivity extends SherlockFragmentActivity {
                         Bundle bundle = new Bundle();
                         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                         ContentResolver.requestSync(account, BankingContract.AUTHORITY, bundle);
+                        cnt++;
                     }
                 }
+
+                EasyTracker.getTracker().trackEvent("ui_action", "menu_item_click", "refresh", cnt);
                 return true;
             }
         });
@@ -179,6 +183,8 @@ public class HomeActivity extends SherlockFragmentActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 addAccount();
+                EasyTracker.getTracker().trackEvent("ui_action", "menu_item_click", "add_account",
+                        1l);
                 return true;
             }
         });
@@ -209,6 +215,8 @@ public class HomeActivity extends SherlockFragmentActivity {
                                             Intent.EXTRA_SUBJECT,
                                             "BG Banks v" + manager.versionName + "-"
                                                     + manager.versionCode + " feedback"));
+                            EasyTracker.getTracker().trackEvent("ui_action", "menu_item_click",
+                                    "send_feedback", 1l);
                         } catch (ActivityNotFoundException e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(),
                                     Toast.LENGTH_SHORT).show();
