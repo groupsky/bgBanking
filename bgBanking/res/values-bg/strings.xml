@@ -16,31 +16,22 @@
 <resources>
     <string name="app_name">БГ Банки</string>
     
-    <!-- Authority type -->
-    <skip/>
-    <string name="authority_type">eu.masconsult.bgbanking</string>
-    
     <!-- DSK Bank strings -->
     <skip />
     <string name="bank_name_dskbank">Банка ДСК</string>
-    <string name="bank_account_type_dskbank">eu.masconsult.bgbanking.dskbank</string>
 
     <!-- ProCredit Bank strings -->
     <skip />
     <string name="bank_name_procreditbank">ПроКредит Банк</string>
-    <string name="bank_account_type_procreditbank">eu.masconsult.bgbanking.procredit</string>
 
     <!-- SGExpressBank strings -->
     <skip />
     <string name="bank_name_sgexpress">Societe Generale Експресбанк</string>
-    <string name="bank_account_type_sgexpress">eu.masconsult.bgbanking.sgexpress</string>
 
     <!-- FIBank strings -->
     <skip />
     <string name="bank_name_fibank_my">Моята Fibank</string>
-    <string name="bank_account_type_fibank_my">eu.masconsult.bgbanking.fibank.my</string>
     <string name="bank_name_fibank_ebanking">Виртуален банков клон (e-fibank)</string>
-    <string name="bank_account_type_fibank_ebanking">eu.masconsult.bgbanking.fibank.ebanking</string>
     
     <!-- Login activity strings -->
     <skip />
