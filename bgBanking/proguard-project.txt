@@ -30,12 +30,6 @@
 
 
 
-## Zubhium
--dontwarn com.zubhium.* 
--dontnote com.zubhium.*
-
-
-
 
 ## ACRA specifics
 # we need line numbers in our stack traces otherwise they are pretty useless
