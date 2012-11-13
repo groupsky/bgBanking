@@ -1,0 +1,59 @@
+<!--
+  Copyright (c) 2012 MASConsult Ltd
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+    <string name="app_name">БГ Банки</string>
+    
+    <!-- Authority type -->
+    <skip/>
+    <string name="authority_type">eu.masconsult.bgbanking</string>
+    
+    <!-- DSK Bank strings -->
+    <skip />
+    <string name="bank_name_dskbank">Банка ДСК</string>
+    <string name="bank_account_type_dskbank">eu.masconsult.bgbanking.dskbank</string>
+
+    <!-- ProCredit Bank strings -->
+    <skip />
+    <string name="bank_name_procreditbank">ПроКредит Банк</string>
+    <string name="bank_account_type_procreditbank">eu.masconsult.bgbanking.procredit</string>
+
+    <!-- SGExpressBank strings -->
+    <skip />
+    <string name="bank_name_sgexpress">Societe Generale Експресбанк</string>
+    <string name="bank_account_type_sgexpress">eu.masconsult.bgbanking.sgexpress</string>
+
+    <!-- FIBank strings -->
+    <skip />
+    <string name="bank_name_fibank_my">Моята Fibank</string>
+    <string name="bank_account_type_fibank_my">eu.masconsult.bgbanking.fibank.my</string>
+    <string name="bank_name_fibank_ebanking">Виртуален банков клон (e-fibank)</string>
+    <string name="bank_account_type_fibank_ebanking">eu.masconsult.bgbanking.fibank.ebanking</string>
+    
+    <!-- Login activity strings -->
+    <skip />
+    <string name="ui_activity_login_title">Вход</string>
+    <string name="username">Потребителско име</string>
+    <string name="password">Парола</string>
+    <string name="sign_in_agreement">ВАЖНО: Това приложение използва регистрацията за интернет банкиране за да получава информация. Паролата се записва само в телефона и се използва единствено за извличане на информацията. Потребителското ви име и парола се изпраща само до интернет портала на съответната банка и се използва https защитена връзка.</string>
+    <string name="back_button_label">Назад</string>
+    <string name="sign_in_button_label">Вход</string>
+    <string name="ui_content_description_bank_logo">банково лог</string>
+    <string name="login_activity_authenticating">Регистриране…</string>
+    <string name="login_activity_loginfail_text_both">Невалидно потребителско име или парола!</string>
+    <string name="login_activity_loginfail_text_pwonly">Грешна парола!</string>
+    <string name="choose_account_type">Изберете типа на регистрацията</string>
+    
+</resources>
