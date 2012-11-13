@@ -16,20 +16,14 @@
 
 package eu.masconsult.bgbanking.utils;
 
-import java.util.HashMap;
+import java.text.NumberFormat;
+import java.util.Currency;
+
+import org.acra.ACRA;
 
 public class Convert {
 
-    final static String DEFAULT_CURRENCY_FORMAT = "%2$s %1$1.2f";
-
-    @SuppressWarnings("serial")
-    private static HashMap<String, String> currencyFormats = new HashMap<String, String>() {
-        {
-            put("BGN", "%1$1.2f лв.");
-            put("USD", "€%1$1.2f");
-            put("EUR", "$%1$1.2f");
-        }
-    };
+    private final static String DEFAULT_CURRENCY_FORMAT = "%2$s %1$1.2f";
 
     public static float strToFloat(String text) {
         return Float.valueOf(text.trim().replace(',', '.').replace("\u00a0", ""));
@@ -50,10 +44,13 @@ public class Convert {
     }
 
     public static String formatCurrency(float value, String currency) {
-        String format = currencyFormats.get(currency);
-        if (format == null) {
-            format = DEFAULT_CURRENCY_FORMAT;
+        NumberFormat format = (NumberFormat) NumberFormat.getCurrencyInstance().clone();
+        try {
+            format.setCurrency(Currency.getInstance(currency));
+        } catch (IllegalArgumentException e) {
+            ACRA.getErrorReporter().handleSilentException(e);
+            return String.format(DEFAULT_CURRENCY_FORMAT, value, currency);
         }
-        return String.format(format, value, currency);
+        return format.format(value);
     }
 }
