@@ -47,4 +47,8 @@
     <string name="login_activity_loginfail_text_pwonly">Грешна парола!</string>
     <string name="choose_account_type">Изберете типа на регистрацията</string>
     
+    <!-- Main activity strings -->
+    <skip />
+    <string name="sample_account_name">примерна сметка</string>
+    
 </resources>

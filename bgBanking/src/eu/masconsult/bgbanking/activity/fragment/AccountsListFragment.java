@@ -62,6 +62,7 @@ import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.provider.BankingContract;
 import eu.masconsult.bgbanking.utils.Convert;
+import eu.masconsult.bgbanking.utils.SampleCursor;
 
 public class AccountsListFragment extends SherlockListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, OnAccountsUpdateListener {
@@ -105,35 +106,58 @@ public class AccountsListFragment extends SherlockListFragment implements
         for (Bank bank : banks) {
             Account[] accounts = accountManager.getAccountsByType(bank
                     .getAccountType(getActivity()));
-            for (Account account : accounts) {
-                View header = getActivity().getLayoutInflater().inflate(
-                        R.layout.row_bank_account_header,
-                        null);
-                View bank_icon = header.findViewById(R.id.bank_icon);
-                if (bank_icon != null && bank_icon instanceof ImageView) {
-                    ((ImageView) bank_icon).setImageResource(bank.iconResource);
-                }
-                View bank_name = header.findViewById(R.id.bank_name);
-                if (bank_name != null && bank_name instanceof TextView) {
-                    ((TextView) bank_name).setText(bank.labelRes);
-                }
-                View account_name = header.findViewById(R.id.account_name);
-                if (account_name != null && account_name instanceof TextView) {
-                    ((TextView) account_name).setText(account.name);
-                }
-                mAdapter.addView(header);
-                mAdapter.addAdapter(new BankAccountsAdapter(getActivity(),
-                        R.layout.row_bank_account,
-                        null, 0));
 
-                int idx = mAccounts.size();
-                mAccounts.add(idx, account);
-                getLoaderManager().initLoader(idx, null, this);
+            for (Account account : accounts) {
+                addAccount(bank, account, false);
             }
+        }
+
+        if (mAccounts.size() == 0) {
+            // show sample accounts
+            for (Bank bank : banks) {
+                addAccount(
+                        bank,
+                        new Account(getString(R.string.sample_account_name), bank
+                                .getAccountType(getActivity())),
+                        true);
+            }
+
         }
 
         Log.v(TAG, "found " + mAccounts.size() + " accounts");
         setListAdapter(mAdapter);
+    }
+
+    private void addAccount(Bank bank, Account account, boolean sample) {
+        View header = getActivity().getLayoutInflater().inflate(
+                R.layout.row_bank_account_header,
+                null);
+        View bank_icon = header.findViewById(R.id.bank_icon);
+        if (bank_icon != null && bank_icon instanceof ImageView) {
+            ((ImageView) bank_icon).setImageResource(bank.iconResource);
+        }
+        View bank_name = header.findViewById(R.id.bank_name);
+        if (bank_name != null && bank_name instanceof TextView) {
+            ((TextView) bank_name).setText(bank.labelRes);
+        }
+        View account_name = header.findViewById(R.id.account_name);
+        if (account_name != null && account_name instanceof TextView) {
+            ((TextView) account_name).setText(account.name);
+        }
+        mAdapter.addView(header);
+        BankAccountsAdapter adapter = new BankAccountsAdapter(getActivity(),
+                R.layout.row_bank_account, null, 0);
+        mAdapter.addAdapter(adapter);
+
+        int idx = mAccounts.size();
+        mAccounts.add(idx, account);
+        if (sample) {
+            Log.d(TAG, "Adding sample account cursor");
+            adapter.swapCursor(new SampleCursor(getActivity()));
+        } else {
+            Log.d(TAG, "Requesting loader");
+            getLoaderManager().initLoader(idx, null, this);
+        }
     }
 
     @Override
@@ -231,8 +255,7 @@ public class AccountsListFragment extends SherlockListFragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Swap the new cursor in. (The framework will take care of closing
-        // the
-        // old cursor once we return.)
+        // the old cursor once we return.)
         getCursorAdapter(loader).swapCursor(data);
 
         // The list should now be shown.
@@ -261,6 +284,7 @@ public class AccountsListFragment extends SherlockListFragment implements
     }
 
     private static final class BankAccountsAdapter extends ResourceCursorAdapter {
+
         private BankAccountsAdapter(Context context, int layout, Cursor c, int flags) {
             super(context, layout, c, flags);
         }
