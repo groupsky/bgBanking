@@ -25,9 +25,9 @@
 
     <!-- to be notified when network change -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
+
     <!-- to check the sync status -->
-    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -100,7 +100,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator_fibank_ebanking" />
         </service>
-        
+
         <!-- The login activity -->
         <activity
             android:name=".accounts.LoginActivity"
@@ -170,7 +170,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter_fibank_ebanking" />
         </service>
-        
+
         <!-- The content provider -->
         <provider
             android:name=".provider.BankingProvider"
@@ -179,7 +179,9 @@
         </provider>
 
         <!-- The UI -->
-        <activity android:name=".activity.HomeActivity" android:theme="@style/Theme.bgBanking">
+        <activity
+            android:name=".activity.HomeActivity"
+            android:theme="@style/Theme.bgBanking" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
