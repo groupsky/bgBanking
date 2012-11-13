@@ -14,27 +14,33 @@
   limitations under the License.
 -->
 <resources>
+
     <string name="app_name">bgBanking</string>
-    
+
     <!-- DSK Bank strings -->
     <skip />
+
     <string name="bank_name_dskbank">DSK Bank</string>
 
     <!-- ProCredit Bank strings -->
     <skip />
+
     <string name="bank_name_procreditbank">ProCredit Bank</string>
 
     <!-- SGExpressBank strings -->
     <skip />
+
     <string name="bank_name_sgexpress">SG Express Bank</string>
 
     <!-- FIBank strings -->
     <skip />
+
     <string name="bank_name_fibank_my">My Fibank</string>
     <string name="bank_name_fibank_ebanking">Virtual Branch (e-fibank)</string>
-    
+
     <!-- Login activity strings -->
     <skip />
+
     <string name="ui_activity_login_title">Sign in</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -46,9 +52,17 @@
     <string name="login_activity_loginfail_text_both">Invalid username or password!</string>
     <string name="login_activity_loginfail_text_pwonly">Wrong password!</string>
     <string name="choose_account_type">Choose account type</string>
-    
+
     <!-- Main activity strings -->
     <skip />
+
     <string name="sample_account_name">sample account</string>
-    
+
+    <!-- Menu item strings -->
+    <skip />
+
+    <string name="menu_item_refresh">Refresh</string>
+    <string name="menu_item_add_account">Add account</string>
+    <string name="menu_item_send_feedback">Send feedback</string>
+
 </resources>

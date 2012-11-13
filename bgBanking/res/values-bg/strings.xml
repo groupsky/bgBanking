@@ -14,27 +14,33 @@
   limitations under the License.
 -->
 <resources>
+
     <string name="app_name">БГ Банки</string>
-    
+
     <!-- DSK Bank strings -->
     <skip />
+
     <string name="bank_name_dskbank">Банка ДСК</string>
 
     <!-- ProCredit Bank strings -->
     <skip />
+
     <string name="bank_name_procreditbank">ПроКредит Банк</string>
 
     <!-- SGExpressBank strings -->
     <skip />
+
     <string name="bank_name_sgexpress">Societe Generale Експресбанк</string>
 
     <!-- FIBank strings -->
     <skip />
+
     <string name="bank_name_fibank_my">Моята Fibank</string>
     <string name="bank_name_fibank_ebanking">Виртуален банков клон (e-fibank)</string>
-    
+
     <!-- Login activity strings -->
     <skip />
+
     <string name="ui_activity_login_title">Вход</string>
     <string name="username">Потребителско име</string>
     <string name="password">Парола</string>
@@ -46,9 +52,17 @@
     <string name="login_activity_loginfail_text_both">Невалидно потребителско име или парола!</string>
     <string name="login_activity_loginfail_text_pwonly">Грешна парола!</string>
     <string name="choose_account_type">Изберете типа на регистрацията</string>
-    
+
     <!-- Main activity strings -->
     <skip />
+
     <string name="sample_account_name">примерна сметка</string>
-    
+
+    <!-- Menu item strings -->
+    <skip />
+
+    <string name="menu_item_refresh">обновяване на данните</string>
+    <string name="menu_item_add_account">добавяне на нова регистрация</string>
+    <string name="menu_item_send_feedback">изпращане на обратна връзка</string>
+
 </resources>

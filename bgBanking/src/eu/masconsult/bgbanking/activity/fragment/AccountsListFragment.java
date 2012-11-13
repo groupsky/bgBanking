@@ -33,7 +33,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -48,19 +47,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.commonsware.cwac.merge.MergeAdapter;
 
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
-import eu.masconsult.bgbanking.provider.BankingContract;
 import eu.masconsult.bgbanking.utils.Convert;
 import eu.masconsult.bgbanking.utils.SampleCursor;
 
@@ -176,48 +170,6 @@ public class AccountsListFragment extends SherlockListFragment implements
         accountManager = null;
 
         super.onDetach();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem refreshItem = menu.add("Refresh");
-        refreshItem.setIcon(R.drawable.ic_menu_refresh);
-        refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        refreshItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                AccountManager accountManager = AccountManager.get(getActivity());
-                if (accountManager == null) {
-                    return false;
-                }
-
-                Bank[] banks = Bank.values();
-                for (Bank bank : banks) {
-                    for (Account account : accountManager.getAccountsByType(bank
-                            .getAccountType(getActivity()))) {
-                        Log.v(TAG,
-                                "account: "
-                                        + account.name
-                                        + ", "
-                                        + account.type
-                                        + ", "
-                                        + ContentResolver.getIsSyncable(account,
-                                                BankingContract.AUTHORITY));
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                        ContentResolver.requestSync(account, BankingContract.AUTHORITY, bundle);
-                    }
-                }
-                return true;
-            }
-        });
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // Insert desired behavior here.
-        Log.i("FragmentComplexList", "Item clicked: " + id);
     }
 
     // These are the Contacts rows that we will retrieve.

@@ -76,7 +76,6 @@ public class HomeActivity extends SherlockFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkForLoggedAccounts();
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -106,23 +105,6 @@ public class HomeActivity extends SherlockFragmentActivity {
         super.onPause();
     }
 
-    protected void checkForLoggedAccounts() {
-        Bank[] banks = Bank.values();
-        String[] accountTypes = new String[banks.length];
-
-        boolean hasAccounts = false;
-        for (int i = 0; i < banks.length; i++) {
-            accountTypes[i] = banks[i].getAccountType(this);
-            if (accountManager.getAccountsByType(banks[i].getAccountType(this)).length > 0) {
-                hasAccounts = true;
-            }
-        }
-
-        if (!hasAccounts) {
-            addAccount();
-        }
-    }
-
     void addAccount() {
         ChooseAccountTypeFragment accountTypesFragment = new ChooseAccountTypeFragment();
         accountTypesFragment.show(getSupportFragmentManager(), "AccountsDialog");
@@ -132,7 +114,34 @@ public class HomeActivity extends SherlockFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem addAccountItem = menu.add("Add account");
+        MenuItem refreshItem = menu.add(R.string.menu_item_refresh);
+        refreshItem.setIcon(R.drawable.ic_menu_refresh);
+        refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
+                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        refreshItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                AccountManager accountManager = AccountManager.get(HomeActivity.this);
+                if (accountManager == null) {
+                    return false;
+                }
+
+                Bank[] banks = Bank.values();
+                for (Bank bank : banks) {
+                    for (Account account : accountManager.getAccountsByType(bank
+                            .getAccountType(HomeActivity.this))) {
+                        Log.v(TAG, String.format("account: %s, %s, %s", account.name, account.type,
+                                ContentResolver.getIsSyncable(account, BankingContract.AUTHORITY)));
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                        ContentResolver.requestSync(account, BankingContract.AUTHORITY, bundle);
+                    }
+                }
+                return true;
+            }
+        });
+
+        MenuItem addAccountItem = menu.add(R.string.menu_item_add_account);
         addAccountItem.setIcon(R.drawable.ic_menu_add);
         addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
                 | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -145,7 +154,7 @@ public class HomeActivity extends SherlockFragmentActivity {
             }
         });
 
-        MenuItem sendFeedback = menu.add("Send feedback");
+        MenuItem sendFeedback = menu.add(R.string.menu_item_send_feedback);
         sendFeedback.setIcon(R.drawable.ic_menu_start_conversation);
         sendFeedback.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendFeedback.setOnMenuItemClickListener(new
