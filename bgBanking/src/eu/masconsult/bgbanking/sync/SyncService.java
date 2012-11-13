@@ -27,7 +27,7 @@ import eu.masconsult.bgbanking.BankingApplication;
  * ACTION_AUTHENTICATOR_INTENT. It instantiates the syncadapter and returns its
  * IBinder.
  */
-public class SyncService extends Service {
+public abstract class SyncService extends Service {
 
     private static final String TAG = BankingApplication.TAG + "SyncService";
 
