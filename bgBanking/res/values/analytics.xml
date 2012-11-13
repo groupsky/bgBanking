@@ -5,7 +5,7 @@
     <!--
     The Google Analytics tracking ID to which to send your data. Dashes in the ID must be unencoded. You can disable your tracking by not providing this value.
     -->
-    <string name="ga_trackingId">UA-34928091-3</string>
+    <string name="ga_trackingId" tools:ignore="TypographyDashes">UA-34928091-3</string>
 
 
     <!-- The name of your app, used in the app name dimension in your reports. Defaults to the value found in the package. 
