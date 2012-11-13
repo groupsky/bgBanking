@@ -44,7 +44,7 @@
     <string name="ui_activity_login_title">Sign in</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="sign_in_agreement">TODO warn that no liability is offered!</string>
+    <string name="sign_in_agreement">IMPORTANT: This application uses registration for internet banking to obtain information. The password is saved only in the phone and is only used to extract information. Your username and password are sent only to the internet portal of the bank and use https secure connection.</string>
     <string name="back_button_label">Back</string>
     <string name="sign_in_button_label">Sign in</string>
     <string name="ui_content_description_bank_logo">bank logo</string>
