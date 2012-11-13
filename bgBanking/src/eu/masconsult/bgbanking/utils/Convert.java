@@ -21,6 +21,8 @@ import java.util.Currency;
 
 import org.acra.ACRA;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 public class Convert {
 
     private final static String DEFAULT_CURRENCY_FORMAT = "%2$s %1$1.2f";
@@ -45,11 +47,14 @@ public class Convert {
 
     public static String formatCurrency(float value, String currency) {
         NumberFormat format = (NumberFormat) NumberFormat.getCurrencyInstance().clone();
-        try {
-            format.setCurrency(Currency.getInstance(currency));
-        } catch (IllegalArgumentException e) {
-            ACRA.getErrorReporter().handleSilentException(e);
-            return String.format(DEFAULT_CURRENCY_FORMAT, value, currency);
+        if (currency != null) {
+            try {
+                format.setCurrency(Currency.getInstance(currency));
+            } catch (IllegalArgumentException e) {
+                ACRA.getErrorReporter().handleSilentException(e);
+                EasyTracker.getTracker().trackException("currency " + currency, e, false);
+                return String.format(DEFAULT_CURRENCY_FORMAT, value, currency);
+            }
         }
         return format.format(value);
     }
