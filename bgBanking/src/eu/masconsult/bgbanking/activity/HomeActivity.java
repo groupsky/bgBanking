@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
@@ -63,8 +65,10 @@ public class HomeActivity extends SherlockFragmentActivity {
     private AccountManager accountManager;
 
     @Override
-    protected void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        trackReferrer();
 
         accountManager = AccountManager.get(this);
 
@@ -76,6 +80,8 @@ public class HomeActivity extends SherlockFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        EasyTracker.getInstance().activityStart(this);
 
         FragmentManager fm = getSupportFragmentManager();
 
@@ -103,6 +109,29 @@ public class HomeActivity extends SherlockFragmentActivity {
         unregisterReceiver(syncReceiver);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        EasyTracker.getInstance().activityStop(this);
+    }
+
+    private void trackReferrer() {
+        // Get the intent that started this Activity.
+        Intent intent = getIntent();
+        Uri uri = intent.getData();
+
+        if (uri != null) {
+            if (uri.getQueryParameter("utm_source") != null) {
+                // Use campaign parameters if available.
+                EasyTracker.getTracker().setCampaign(uri.getPath());
+            } else if (uri.getQueryParameter("referrer") != null) {
+                // Otherwise, try to find a referrer parameter.
+                EasyTracker.getTracker().setReferrer(uri.getQueryParameter("referrer"));
+            }
+        }
     }
 
     void addAccount() {

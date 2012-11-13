@@ -34,6 +34,9 @@ import android.content.Intent;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.analytics.tracking.android.EasyTracker;
+
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.Constants;
 import eu.masconsult.bgbanking.banks.Bank;
@@ -64,16 +67,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
             ContentProviderClient provider, SyncResult syncResult) {
         Log.v(TAG, "onPerformSync(): " + account + ", " + authority);
+        // we track only the account type (i.e - procredit, dsk, etc...) not the
+        // username
+        EasyTracker.getTracker().trackEvent("SyncAdapter", "sync", account.type, 1l);
+        long _start = System.currentTimeMillis();
 
         // notify we are starting to perform sync
         context.sendBroadcast(new Intent().setAction(START_SYNC));
 
         Bank bank = Bank.fromAccountType(context, account.type);
         if (bank == null) {
-            throw new IllegalArgumentException("unsupported account type: " + account.type);
+            throw new IllegalArgumentException(String.format("unsupported account type: %s",
+                    account.type));
         }
         if (!Constants.getAuthorityType(context).equals(authority)) {
-            throw new IllegalArgumentException("unsupported authority: " + authority);
+            throw new IllegalArgumentException(
+                    String.format("unsupported authority: %s", authority));
         }
 
         String authToken = null;
@@ -98,12 +107,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "AuthenticatorException", e);
             syncResult.stats.numAuthExceptions++;
             ACRA.getErrorReporter().handleException(e);
+            EasyTracker.getTracker().trackEvent("SyncAdapter", "error-auth", account.type, 1l);
         } catch (OperationCanceledException e) {
             Log.e(TAG, "OperationCanceledExcetpion", e);
+            EasyTracker.getTracker().trackEvent("SyncAdapter", "error-canceled", account.type, 1l);
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
             syncResult.stats.numIoExceptions++;
             ACRA.getErrorReporter().handleException(e);
+            EasyTracker.getTracker().trackEvent("SyncAdapter", "error-io", account.type, 1l);
         } catch (AuthenticationException e) {
             Log.e(TAG, "AuthenticationException", e);
             if (authToken != null) {
@@ -111,14 +123,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 accountManager.invalidateAuthToken(account.type, authToken);
             }
             syncResult.stats.numAuthExceptions++;
+            EasyTracker.getTracker().trackEvent("SyncAdapter", "error-session", account.type, 1l);
         } catch (ParseException e) {
             Log.e(TAG, "ParseException", e);
             syncResult.stats.numParseExceptions++;
             ACRA.getErrorReporter().handleException(e);
+            EasyTracker.getTracker().trackEvent("SyncAdapter", "error-parse", account.type, 1l);
         }
 
         // notify we finished performing sync
         context.sendBroadcast(new Intent().setAction(STOP_SYNC));
+
+        EasyTracker.getTracker().trackTiming("SyncAdapter", System.currentTimeMillis() - _start,
+                bank.name(), null);
     }
 
 }

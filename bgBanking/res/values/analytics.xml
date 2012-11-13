@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- These are the default parameters, you should override in your project -->
+<resources xmlns:tools="https://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
+    <!--
+    The Google Analytics tracking ID to which to send your data. Dashes in the ID must be unencoded. You can disable your tracking by not providing this value.
+    -->
+    <string name="ga_trackingId">UA-34928091-3</string>
+
+
+    <!-- The name of your app, used in the app name dimension in your reports. Defaults to the value found in the package. 
+    <string name="ga_appName">My Fancy app</string>
+    -->
+
+    <!--  The version of your application, used in the app version dimension within your reports. Defaults to the version found in the package.
+    <string name="ga_appVersion">0.1-ALPHA</string>
+    -->
+
+    <!--  Flag to enable or writing of debug information to the log, useful for troubleshooting your implementation. false by default.
+    <bool name="ga_debug">false</bool>
+    -->
+
+    <!--  The dispatch period in seconds. Defaults to 30 minutes.
+    <integer name="ga_dispatchPeriod">30</integer>
+    -->
+
+    <!--  The sample rate to use. Default is 100.0. It can be any value between 0.0 and 100.0
+    <string name="ga_sampleFrequency">100.0</string>
+    -->
+
+    <!-- Automatically track a screen view each time a user starts an Activity. false by default.
+     -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <!-- Tells Google Analytics to anonymize the information sent by the tracker objects by removing the last octet of the IP address prior to its storage. Note that this will slightly reduce the accuracy of geographic reporting. false by default.
+    <bool name="ga_anonymizeIp">false</bool>
+     -->
+
+    <!-- Automatically track an Exception each time an uncaught exception is thrown in your application. false by default.
+    <bool name="ga_reportUncaughtExceptions">false</bool>
+    -->
+    
+    <!-- The amount of time (in seconds) your application can stay in the background before the session is ended. Default is 30 seconds. Negative value disables EasyTracker session management.
+    <integer name="ga_sessionTimeout">30</integer>
+     -->
+
+</resources>

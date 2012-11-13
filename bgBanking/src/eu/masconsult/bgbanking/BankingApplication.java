@@ -21,6 +21,8 @@ import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 @ReportsCrashes(formUri = "http://www.bugsense.com/api/acra?api_key="
         + BankingApplication.BUGSENSE_KEY, formKey = "")
 public class BankingApplication extends Application {
@@ -34,5 +36,7 @@ public class BankingApplication extends Application {
         ACRA.init(this);
 
         super.onCreate();
+
+        EasyTracker.getInstance().setContext(this);
     }
 }
