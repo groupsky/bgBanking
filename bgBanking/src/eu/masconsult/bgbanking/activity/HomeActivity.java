@@ -134,7 +134,7 @@ public class HomeActivity extends SherlockFragmentActivity {
 
         MenuItem addAccountItem = menu.add("Add account");
         addAccountItem.setIcon(R.drawable.ic_menu_add);
-        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS
+        addAccountItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
                 | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         addAccountItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
@@ -147,7 +147,7 @@ public class HomeActivity extends SherlockFragmentActivity {
 
         MenuItem sendFeedback = menu.add("Send feedback");
         sendFeedback.setIcon(R.drawable.ic_menu_start_conversation);
-        sendFeedback.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        sendFeedback.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendFeedback.setOnMenuItemClickListener(new
                 MenuItem.OnMenuItemClickListener() {
 
@@ -165,11 +165,11 @@ public class HomeActivity extends SherlockFragmentActivity {
                             startActivity(new Intent(Intent.ACTION_SEND)
                                     .setType("plain/text")
                                     .putExtra(Intent.EXTRA_EMAIL, new String[] {
-                                            "mobile@masconsult.eu"
+                                            "bgbanks@masconsult.eu"
                                     })
                                     .putExtra(
                                             Intent.EXTRA_SUBJECT,
-                                            "bgBanking v" + manager.versionName + "-"
+                                            "BG Banks v" + manager.versionName + "-"
                                                     + manager.versionCode + " feedback"));
                         } catch (ActivityNotFoundException e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(),
