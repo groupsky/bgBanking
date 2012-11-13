@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_list_header"
@@ -12,6 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/ui_content_description_bank_logo"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_bankicon_procreditbank" />
 
@@ -25,7 +27,8 @@
         android:text="masconsult"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/primary_text_light"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/bank_name"
@@ -36,6 +39,7 @@
         android:layout_toRightOf="@id/bank_icon"
         android:text="ProCredit Bank"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/primary_text_light" />
+        android:textColor="@android:color/primary_text_light"
+        tools:ignore="HardcodedText" />
 
 </RelativeLayout>
