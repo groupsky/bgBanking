@@ -67,6 +67,7 @@ public enum Bank {
     private final Class<? extends BankClient> clientClass;
     private BankClient client = null;
     private String accountTypeString = null;
+    private String labelString = null;
 
     private Bank(int accountTypeResource, int iconResource, int labelRes,
             Class<? extends BankClient> clientClass) {
@@ -112,5 +113,12 @@ public enum Bank {
             accountTypeString = context.getString(accountTypeResource);
         }
         return accountTypeString;
+    }
+
+    public String getAccountName(Context context) {
+        if (labelString == null) {
+            labelString = context.getString(labelRes);
+        }
+        return labelString;
     }
 }
