@@ -106,7 +106,6 @@ public class SampleCursor extends CursorWrapper {
                 // COLUMN_NAME_AVAILABLE_BALANCE,
             case 5:
                 return 1234567.89f;
-                // COLUMN_NAME_LAST_TRANSACTION_DATE,
         }
         return -1;
     }
