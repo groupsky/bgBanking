@@ -7,3 +7,6 @@
 [submodule "malibu"]
 	path = malibu
 	url = git@github.com:malibu-lib/malibu.git
+[submodule "cwac-adapter"]
+	path = cwac-adapter
+	url = git@github.com:masconsult/cwac-adapter.git

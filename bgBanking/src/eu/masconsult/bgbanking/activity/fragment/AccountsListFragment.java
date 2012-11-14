@@ -33,7 +33,11 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,16 +49,20 @@ import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.commonsware.cwac.adapter.AdapterWrapper;
 import com.commonsware.cwac.merge.MergeAdapter;
 
 import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.R;
 import eu.masconsult.bgbanking.banks.Bank;
+import eu.masconsult.bgbanking.provider.BankingContract;
+import eu.masconsult.bgbanking.sync.SyncAdapter;
 import eu.masconsult.bgbanking.utils.Convert;
 import eu.masconsult.bgbanking.utils.SampleCursor;
 
@@ -139,9 +147,11 @@ public class AccountsListFragment extends SherlockListFragment implements
             ((TextView) account_name).setText(account.name);
         }
         mAdapter.addView(header);
-        BankAccountsAdapter adapter = new BankAccountsAdapter(getActivity(),
+        BankAccountsAdapter adapter = new BankAccountsAdapter(getActivity(), account,
                 R.layout.row_bank_account, null, 0);
-        mAdapter.addAdapter(adapter);
+        EmptyBankAccountsAdapter adapter2 = new EmptyBankAccountsAdapter(getActivity(), account,
+                adapter);
+        mAdapter.addAdapter(adapter2);
 
         int idx = mAccounts.size();
         mAccounts.add(idx, account);
@@ -162,10 +172,16 @@ public class AccountsListFragment extends SherlockListFragment implements
 
         accountManager = AccountManager.get(getActivity());
         accountManager.addOnAccountsUpdatedListener(this, null, true);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.START_SYNC);
+        intentFilter.addAction(SyncAdapter.STOP_SYNC);
+        getActivity().registerReceiver(syncReceiver, intentFilter);
     }
 
     @Override
     public void onDetach() {
+        getActivity().unregisterReceiver(syncReceiver);
         accountManager.removeOnAccountsUpdatedListener(this);
         accountManager = null;
 
@@ -219,7 +235,14 @@ public class AccountsListFragment extends SherlockListFragment implements
     }
 
     private CursorAdapter getCursorAdapter(Loader<Cursor> loader) {
-        return (CursorAdapter) mAdapter.getPiece(loader.getId() * 2 + 1);
+        ListAdapter adapter = mAdapter.getPiece(loader.getId() * 2 + 1);
+        while (adapter instanceof AdapterWrapper) {
+            adapter = ((AdapterWrapper) adapter).getWrappedAdapter();
+        }
+        if (adapter instanceof CursorAdapter) {
+            return (CursorAdapter) adapter;
+        }
+        return null;
     }
 
     @Override
@@ -235,10 +258,33 @@ public class AccountsListFragment extends SherlockListFragment implements
         populateList();
     }
 
+    void syncStateChanged(boolean syncActive) {
+        Log.v(TAG, "syncStateChanged: " + syncActive);
+        mAdapter.notifyDataSetChanged();
+    }
+
     private static final class BankAccountsAdapter extends ResourceCursorAdapter {
 
-        private BankAccountsAdapter(Context context, int layout, Cursor c, int flags) {
+        private Account account;
+
+        private BankAccountsAdapter(Context context, Account account, int layout, Cursor c,
+                int flags) {
             super(context, layout, c, flags);
+            this.account = account;
+
+        }
+
+        @Override
+        public Cursor swapCursor(Cursor newCursor) {
+            Cursor oldCursor = super.swapCursor(newCursor);
+            Log.d(TAG, "swaping cursor");
+            if (oldCursor != null) {
+                Log.d(TAG, String.format("old cursor size=%d", oldCursor.getCount()));
+            }
+            if (newCursor != null) {
+                Log.d(TAG, String.format("new cursor size=%d", newCursor.getCount()));
+            }
+            return oldCursor;
         }
 
         @Override
@@ -296,6 +342,67 @@ public class AccountsListFragment extends SherlockListFragment implements
 
     }
 
+    private static final class EmptyBankAccountsAdapter extends AdapterWrapper {
+
+        private Account account;
+        private Context context;
+
+        public EmptyBankAccountsAdapter(Context context, Account account, ListAdapter wrapped) {
+            super(wrapped);
+            this.account = account;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            int size = getWrappedAdapter().getCount();
+            if (size > 0) {
+                return size;
+            }
+            return 1;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return getWrappedAdapter().getViewTypeCount() + 1;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (getWrappedAdapter().getCount() > 0) {
+                return getWrappedAdapter().getItemViewType(position);
+            } else {
+                return getWrappedAdapter().getViewTypeCount();
+            }
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (position == 0 && getWrappedAdapter().getCount() == 0) {
+                TextView view;
+                if (convertView != null && convertView instanceof TextView) {
+                    view = (TextView) convertView;
+                } else {
+                    view = new TextView(context);
+                }
+
+                // view.setLayoutParams(new ViewGroup.LayoutParams(
+                // ViewGroup.LayoutParams.MATCH_PARENT,
+                // ViewGroup.LayoutParams.WRAP_CONTENT));
+
+                if (ContentResolver.isSyncActive(account, BankingContract.AUTHORITY)) {
+                    view.setText("syncing...");
+                } else {
+                    view.setText("no accounts");
+                }
+
+                return view;
+            }
+            return super.getView(position, convertView, parent);
+        }
+
+    }
+
     private static final class MyMergeAdapter extends MergeAdapter {
 
         ListAdapter getPiece(int index) {
@@ -303,4 +410,16 @@ public class AccountsListFragment extends SherlockListFragment implements
         }
 
     }
+
+    final BroadcastReceiver syncReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (SyncAdapter.START_SYNC.equals(intent.getAction())) {
+                syncStateChanged(true);
+            } else if (SyncAdapter.STOP_SYNC.equals(intent.getAction())) {
+                syncStateChanged(false);
+            }
+        }
+    };
 }

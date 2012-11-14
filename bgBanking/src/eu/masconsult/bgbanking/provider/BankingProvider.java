@@ -266,6 +266,7 @@ public class BankingProvider extends ContentProvider {
                 orderBy // The sort order
                 );
 
+        Log.v(TAG, String.format("notification set for %s", uri));
         // Tells the Cursor what URI to watch, so it knows when its source data
         // changes
         c.setNotificationUri(getContext().getContentResolver(), uri);
@@ -326,6 +327,7 @@ public class BankingProvider extends ContentProvider {
 
             // Notifies observers registered against this provider that the data
             // changed.
+            Log.v(TAG, String.format("notify change for %s", accountUri));
             getContext().getContentResolver().notifyChange(accountUri, null);
             return accountUri;
         }
@@ -441,6 +443,7 @@ public class BankingProvider extends ContentProvider {
          * along to the resolver framework, and observers that have registered
          * themselves for the provider are notified.
          */
+        Log.v(TAG, String.format("notify change for %s", uri));
         getContext().getContentResolver().notifyChange(uri, null);
 
         // Returns the number of rows updated.
@@ -535,6 +538,7 @@ public class BankingProvider extends ContentProvider {
          * along to the resolver framework, and observers that have registered
          * themselves for the provider are notified.
          */
+        Log.v(TAG, String.format("notify change for %s", uri));
         getContext().getContentResolver().notifyChange(uri, null);
 
         // Returns the number of rows deleted.
