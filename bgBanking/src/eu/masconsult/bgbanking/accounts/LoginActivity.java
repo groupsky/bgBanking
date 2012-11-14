@@ -39,6 +39,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -134,6 +135,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
                     KeyEvent event) {
                 if (actionId == IME_ACTION_DONE && nextBtn.isEnabled()) {
                     signIn();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
                 }
                 return false;
