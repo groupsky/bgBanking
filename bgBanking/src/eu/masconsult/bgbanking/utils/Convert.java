@@ -28,7 +28,18 @@ public class Convert {
     private final static String DEFAULT_CURRENCY_FORMAT = "%2$s %1$1.2f";
 
     public static float strToFloat(String text) {
-        return Float.valueOf(text.trim().replace(',', '.').replace("\u00a0", ""));
+        // remove leading and ending spaces
+        text = text.trim().replace("\u00a0", "");
+        for (int i = text.length() - 1; i >= 0; i--) {
+            char charAt = text.charAt(i);
+            if (charAt == ',' || charAt == '.') {
+                text = text.substring(0, i).replaceAll("[ ,.]", "")
+                        + '.'
+                        + text.substring(i + 1).replace(" ", "");
+                break;
+            }
+        }
+        return Float.valueOf(text);
     }
 
     public static String formatIBAN(String string) {
