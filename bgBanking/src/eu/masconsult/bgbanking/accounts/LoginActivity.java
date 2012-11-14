@@ -42,6 +42,7 @@ import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import eu.masconsult.bgbanking.BankingApplication;
@@ -270,6 +271,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements OnCli
                 messageView.setText(R.string.login_activity_loginfail_text_pwonly);
             }
             messageView.setVisibility(View.VISIBLE);
+            ((ScrollView) findViewById(R.id.input_fields_scroll)).fullScroll(View.FOCUS_UP);
         }
     }
 

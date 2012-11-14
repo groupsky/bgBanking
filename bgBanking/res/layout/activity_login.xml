@@ -47,6 +47,7 @@
         android:text="@string/sign_in_button_label" />
 
     <ScrollView
+        android:id="@+id/input_fields_scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/back_button"
