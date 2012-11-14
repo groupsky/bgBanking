@@ -33,6 +33,10 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
 
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
     <application
         android:name=".BankingApplication"
         android:icon="@drawable/ic_launcher"
