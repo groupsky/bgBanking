@@ -97,7 +97,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             // get the bank accounts from server
             List<RawBankAccount> bankAccounts = bank.getClient().getBankAccounts(authToken);
 
-            Log.d(TAG, "Received " + bankAccounts.size() + " bank accounts");
+            Log.d(TAG, String.format("Received %d bank accounts", bankAccounts.size()));
             BankAccountManager.updateAccounts(context, account, bankAccounts);
 
             syncResult.stats.numEntries += bankAccounts.size();
@@ -137,5 +137,4 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         EasyTracker.getTracker().trackTiming("SyncAdapter", System.currentTimeMillis() - _start,
                 bank.name(), null);
     }
-
 }
