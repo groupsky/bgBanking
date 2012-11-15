@@ -163,7 +163,7 @@ public class BankingProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        Log.v(TAG, "getType(): " + uri);
+        Log.v(TAG, String.format("getType(): %s", uri));
         /**
          * Chooses the MIME type based on the incoming URI pattern
          */
@@ -200,7 +200,10 @@ public class BankingProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        Log.v(TAG, "query(): " + uri);
+        Log.v(TAG, String.format("query(): %s, %s, %s", uri, selection, sortOrder));
+        for (String arg : selectionArgs) {
+            Log.v(TAG, String.format("query arg: %s", arg));
+        }
 
         // Constructs a new query builder and sets its table name
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -265,6 +268,7 @@ public class BankingProvider extends ContentProvider {
                 null, // don't filter by row groups
                 orderBy // The sort order
                 );
+        Log.v(TAG, String.format("found %d records", c.getCount()));
 
         Log.v(TAG, String.format("notification set for %s", uri));
         // Tells the Cursor what URI to watch, so it knows when its source data
@@ -285,7 +289,7 @@ public class BankingProvider extends ContentProvider {
      */
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
-        Log.v(TAG, "insert(): " + uri);
+        Log.v(TAG, String.format("insert(): %s", uri));
 
         // Validates the incoming URI. Only the full provider URI is allowed for
         // inserts.
@@ -361,7 +365,7 @@ public class BankingProvider extends ContentProvider {
      */
     @Override
     public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
-        Log.v(TAG, "update(): " + uri);
+        Log.v(TAG, String.format("update(): %s, %s", uri, where));
 
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -416,7 +420,7 @@ public class BankingProvider extends ContentProvider {
                     finalWhere = finalWhere + " AND " + where;
                 }
 
-                Log.d(TAG, "updating " + finalWhere);
+                Log.d(TAG, String.format("updating %s", finalWhere));
                 // Does the update and returns the number of rows updated.
                 count = db.update(
                         BankingContract.BankAccount.TABLE_NAME, // The
@@ -467,7 +471,7 @@ public class BankingProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
-        Log.v(TAG, "delete(): " + uri);
+        Log.v(TAG, String.format("delete(): %s, %s", uri, where));
 
         // Opens the database object in "write" mode.
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
