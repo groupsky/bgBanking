@@ -16,6 +16,9 @@
 
 package eu.masconsult.bgbanking.platform;
 
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.ACCOUNT_NAME;
+import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.ACCOUNT_TYPE;
+
 import java.util.List;
 
 import android.accounts.Account;
@@ -42,7 +45,7 @@ public final class BankAccountManager {
         for (final RawBankAccount rawAccount : bankAccounts) {
             // we know that banks don't delete accounts, so we only need to
             // check if we already have the account at our side
-            long id = lookupRawAccount(resolver, rawAccount.getServerId());
+            long id = lookupRawAccount(resolver, account, rawAccount.getServerId());
             if (id != 0) {
                 Log.d(TAG, "updating account " + rawAccount.getServerId());
                 updateAccount(resolver, rawAccount, true, id, batchOperation);
@@ -61,14 +64,16 @@ public final class BankAccountManager {
         batchOperation.execute();
     }
 
-    private static long lookupRawAccount(ContentResolver resolver, String serverId) {
+    private static long lookupRawAccount(ContentResolver resolver, Account account, String serverId) {
         long id = 0;
         final Cursor c = resolver.query(
                 AccountIdQuery.CONTENT_URI,
                 AccountIdQuery.PROJECTION,
                 AccountIdQuery.SELECTION,
                 new String[] {
-                    String.valueOf(serverId)
+                        String.valueOf(serverId),
+                        account.name,
+                        account.type
                 },
                 null);
         try {
@@ -155,6 +160,14 @@ public final class BankAccountManager {
         }
     }
 
+    public static void removeAccount(Context context, Account account) {
+        final ContentResolver resolver = context.getContentResolver();
+        resolver.delete(AccountIdQuery.CONTENT_URI, ACCOUNT_NAME
+                + "=? AND " + ACCOUNT_TYPE + "=?", new String[] {
+                account.name, account.type
+        });
+    }
+
     /**
      * Constants for a query to find an account given an IBAN.
      */
@@ -172,7 +185,8 @@ public final class BankAccountManager {
         public final static Uri CONTENT_URI = BankingContract.BankAccount.CONTENT_URI;
 
         public static final String SELECTION = BankingContract.BankAccount.COLUMN_NAME_SERVER_ID
-                + "=?";
+                + "=? AND " + BankingContract.BankAccount.ACCOUNT_NAME + "=? AND "
+                + BankingContract.BankAccount.ACCOUNT_TYPE + "=?";
     }
 
     /**
@@ -200,4 +214,5 @@ public final class BankAccountManager {
 
         public static final String SELECTION = BankingContract.BankAccount._ID + "=?";
     }
+
 }

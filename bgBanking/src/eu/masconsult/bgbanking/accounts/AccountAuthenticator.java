@@ -43,6 +43,7 @@ import eu.masconsult.bgbanking.BankingApplication;
 import eu.masconsult.bgbanking.Constants;
 import eu.masconsult.bgbanking.banks.Bank;
 import eu.masconsult.bgbanking.banks.CaptchaException;
+import eu.masconsult.bgbanking.platform.BankAccountManager;
 
 /**
  */
@@ -164,6 +165,25 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         Log.v(TAG, "hasFeatures(account: " + account + ", authTokenType: " + authTokenType + ")");
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public Bundle getAccountRemovalAllowed(AccountAuthenticatorResponse response, Account account)
+            throws NetworkErrorException {
+        Log.v(TAG, "getAccountRemovalAllowed(account: " + account + ")");
+        Bundle result = super.getAccountRemovalAllowed(response, account);
+
+        if (result != null && result.containsKey(AccountManager.KEY_BOOLEAN_RESULT)
+                && !result.containsKey(AccountManager.KEY_INTENT)) {
+            final boolean removalAllowed = result.getBoolean(AccountManager.KEY_BOOLEAN_RESULT);
+
+            if (removalAllowed) {
+                // Do my removal stuff here
+                BankAccountManager.removeAccount(context, account);
+            }
+        }
+
+        return result;
     }
 
 }
