@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- These are the default parameters, you should override in your project -->
-<resources xmlns:tools="https://schemas.android.com/tools" tools:ignore="TypographyDashes">
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--
     The Google Analytics tracking ID to which to send your data. Dashes in the ID must be unencoded. You can disable your tracking by not providing this value.
     -->
-    <string name="ga_trackingId" tools:ignore="TypographyDashes">UA-34928091-3</string>
+    <string name="ga_trackingId" tools:ignore="TypographyDashes,UnusedResources" translatable="false">UA-34928091-3</string>
 
 
     <!-- The name of your app, used in the app name dimension in your reports. Defaults to the value found in the package. 
@@ -30,7 +30,7 @@
 
     <!-- Automatically track a screen view each time a user starts an Activity. false by default.
      -->
-    <bool name="ga_autoActivityTracking">true</bool>
+    <bool name="ga_autoActivityTracking" tools:ignore="UnusedResources">true</bool>
 
     <!-- Tells Google Analytics to anonymize the information sent by the tracker objects by removing the last octet of the IP address prior to its storage. Note that this will slightly reduce the accuracy of geographic reporting. false by default.
     <bool name="ga_anonymizeIp">false</bool>
