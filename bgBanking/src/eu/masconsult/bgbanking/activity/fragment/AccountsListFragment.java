@@ -26,9 +26,6 @@ import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUM
 import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_LAST_TRANSACTION_DATE;
 import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.COLUMN_NAME_NAME;
 import static eu.masconsult.bgbanking.provider.BankingContract.BankAccount.CONTENT_URI;
-
-import java.util.ArrayList;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
@@ -48,6 +45,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,14 +71,15 @@ public class AccountsListFragment extends SherlockListFragment implements
     protected static final String TAG = BankingApplication.TAG + "AccountsListFragment";
 
     // This is the Adapter being used to display the list's data.
-    MyMergeAdapter mAdapter;
+    MergeAdapter mAdapter;
 
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
 
-    final ArrayList<Account> mAccounts = new ArrayList<Account>();
-
     private AccountManager accountManager;
+
+    SparseArray<CursorAdapter> adapters = new SparseArray<CursorAdapter>();
+    SparseArray<Account> accounts = new SparseArray<Account>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -99,9 +98,11 @@ public class AccountsListFragment extends SherlockListFragment implements
     }
 
     private void populateList() {
+        Log.v(TAG, "populateList");
         // Create an empty adapter we will use to display the loaded data.
-        mAdapter = new MyMergeAdapter();
-        mAccounts.clear();
+        mAdapter = new MergeAdapter();
+        accounts.clear();
+        adapters.clear();
 
         // Prepare the loader. Either re-connect with an existing one,
         // or start a new one.
@@ -115,7 +116,7 @@ public class AccountsListFragment extends SherlockListFragment implements
             }
         }
 
-        if (mAccounts.size() == 0) {
+        if (accounts.size() == 0) {
             // show sample accounts
             for (Bank bank : banks) {
                 addAccount(
@@ -127,7 +128,7 @@ public class AccountsListFragment extends SherlockListFragment implements
 
         }
 
-        Log.v(TAG, "found " + mAccounts.size() + " accounts");
+        Log.v(TAG, String.format("found %d accounts", accounts.size()));
         setListAdapter(mAdapter);
     }
 
@@ -152,16 +153,16 @@ public class AccountsListFragment extends SherlockListFragment implements
                 R.layout.row_bank_account, null, 0);
         EmptyBankAccountsAdapter adapter2 = new EmptyBankAccountsAdapter(getActivity(), account,
                 adapter);
+        adapters.put(account.hashCode(), adapter);
         mAdapter.addAdapter(adapter2);
 
-        int idx = mAccounts.size();
-        mAccounts.add(idx, account);
+        accounts.put(account.hashCode(), account);
         if (sample) {
             Log.d(TAG, "Adding sample account cursor");
             adapter.swapCursor(new SampleCursor(getActivity()));
         } else {
-            Log.d(TAG, "Requesting loader");
-            getLoaderManager().initLoader(idx, null, this);
+            Log.d(TAG, String.format("Requesting loader %d", account.hashCode()));
+            getLoaderManager().initLoader(account.hashCode(), null, this);
         }
     }
 
@@ -178,10 +179,13 @@ public class AccountsListFragment extends SherlockListFragment implements
         intentFilter.addAction(SyncAdapter.START_SYNC);
         intentFilter.addAction(SyncAdapter.STOP_SYNC);
         getActivity().registerReceiver(syncReceiver, intentFilter);
+
+        populateList();
     }
 
     @Override
     public void onDetach() {
+        Log.v(TAG, "onDetach");
         getActivity().unregisterReceiver(syncReceiver);
         accountManager.removeOnAccountsUpdatedListener(this);
         accountManager = null;
@@ -208,8 +212,11 @@ public class AccountsListFragment extends SherlockListFragment implements
         // currently filtering.
         Uri baseUri = CONTENT_URI;
 
-        Account account = mAccounts.get(id);
-        Log.v(TAG, "creating cursor loader for account: " + account);
+        Account account = accounts.get(id);
+        if (account == null) {
+            return null;
+        }
+        Log.v(TAG, String.format("creating cursor loader for account: %s", account));
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
@@ -223,9 +230,11 @@ public class AccountsListFragment extends SherlockListFragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v(TAG, String.format("onLoadFinished: %d with %d records", loader.getId(),
+                data.getCount()));
         // Swap the new cursor in. (The framework will take care of closing
         // the old cursor once we return.)
-        getCursorAdapter(loader).swapCursor(data);
+        swapCursorFromLoader(loader, data);
 
         // The list should now be shown.
         if (isResumed()) {
@@ -236,14 +245,7 @@ public class AccountsListFragment extends SherlockListFragment implements
     }
 
     private CursorAdapter getCursorAdapter(Loader<Cursor> loader) {
-        ListAdapter adapter = mAdapter.getPiece(loader.getId() * 2 + 1);
-        while (adapter instanceof AdapterWrapper) {
-            adapter = ((AdapterWrapper) adapter).getWrappedAdapter();
-        }
-        if (adapter instanceof CursorAdapter) {
-            return (CursorAdapter) adapter;
-        }
-        return null;
+        return adapters.get(loader.getId());
     }
 
     @Override
@@ -251,7 +253,15 @@ public class AccountsListFragment extends SherlockListFragment implements
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed. We need to make sure we are no
         // longer using it.
-        getCursorAdapter(loader).swapCursor(null);
+        swapCursorFromLoader(loader, null);
+    }
+
+    private void swapCursorFromLoader(Loader<Cursor> loader, Cursor cursor) {
+        CursorAdapter adapter = getCursorAdapter(loader);
+        if (adapter == null) {
+            return;
+        }
+        adapter.swapCursor(cursor);
     }
 
     @Override
@@ -260,7 +270,7 @@ public class AccountsListFragment extends SherlockListFragment implements
     }
 
     void syncStateChanged(boolean syncActive) {
-        Log.v(TAG, "syncStateChanged: " + syncActive);
+        Log.v(TAG, String.format("syncStateChanged: %s", syncActive));
         getListView().post(new Runnable() {
 
             @Override
@@ -393,24 +403,18 @@ public class AccountsListFragment extends SherlockListFragment implements
                 TextView label = (TextView) view;
 
                 if (ContentResolver.isSyncActive(account, BankingContract.AUTHORITY)) {
-                    label.setText("syncing... " + account.name);
+                    label.setText(R.string.status_syncing);
                 } else if (ContentResolver.isSyncPending(account, BankingContract.AUTHORITY)) {
-                    label.setText("pending sync " + account.name);
+                    label.setText(R.string.status_pending_sync);
+                } else if (((CursorAdapter) getWrappedAdapter()).getCursor() == null) {
+                    label.setText(R.string.status_loading);
                 } else {
-                    label.setText("no accounts " + account.name);
+                    label.setText(R.string.status_no_accounts);
                 }
 
                 return view;
             }
             return super.getView(position, convertView, parent);
-        }
-
-    }
-
-    private static final class MyMergeAdapter extends MergeAdapter {
-
-        ListAdapter getPiece(int index) {
-            return pieces.get(index);
         }
 
     }

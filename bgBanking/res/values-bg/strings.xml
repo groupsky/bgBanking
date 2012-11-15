@@ -64,5 +64,9 @@
     <string name="menu_item_refresh">обновяване на данните</string>
     <string name="menu_item_add_account">добавяне на нова регистрация</string>
     <string name="menu_item_send_feedback">изпращане на обратна връзка</string>
-
+    <string name="status_syncing">синхронизиране…</string>
+    <string name="status_pending_sync">изчаква синхронизиране</string>
+    <string name="status_loading">зареждане…</string>
+    <string name="status_no_accounts">няма сметки</string>
+    
 </resources>

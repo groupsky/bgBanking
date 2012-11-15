@@ -64,5 +64,9 @@
     <string name="menu_item_refresh">Refresh</string>
     <string name="menu_item_add_account">Add account</string>
     <string name="menu_item_send_feedback">Send feedback</string>
+    <string name="status_syncing">syncing…</string>
+    <string name="status_pending_sync">pending sync</string>
+    <string name="status_loading">loading…</string>
+    <string name="status_no_accounts">no accounts</string>
 
 </resources>
