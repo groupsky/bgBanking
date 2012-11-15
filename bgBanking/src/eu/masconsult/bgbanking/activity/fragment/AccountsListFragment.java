@@ -48,6 +48,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -147,7 +148,7 @@ public class AccountsListFragment extends SherlockListFragment implements
             ((TextView) account_name).setText(account.name);
         }
         mAdapter.addView(header);
-        BankAccountsAdapter adapter = new BankAccountsAdapter(getActivity(), account,
+        BankAccountsAdapter adapter = new BankAccountsAdapter(getActivity(),
                 R.layout.row_bank_account, null, 0);
         EmptyBankAccountsAdapter adapter2 = new EmptyBankAccountsAdapter(getActivity(), account,
                 adapter);
@@ -260,18 +261,20 @@ public class AccountsListFragment extends SherlockListFragment implements
 
     void syncStateChanged(boolean syncActive) {
         Log.v(TAG, "syncStateChanged: " + syncActive);
-        mAdapter.notifyDataSetChanged();
+        getListView().post(new Runnable() {
+
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private static final class BankAccountsAdapter extends ResourceCursorAdapter {
 
-        private Account account;
-
-        private BankAccountsAdapter(Context context, Account account, int layout, Cursor c,
+        private BankAccountsAdapter(Context context, int layout, Cursor c,
                 int flags) {
             super(context, layout, c, flags);
-            this.account = account;
-
         }
 
         @Override
@@ -345,12 +348,13 @@ public class AccountsListFragment extends SherlockListFragment implements
     private static final class EmptyBankAccountsAdapter extends AdapterWrapper {
 
         private Account account;
-        private Context context;
+        private LayoutInflater layoutInflater;
 
         public EmptyBankAccountsAdapter(Context context, Account account, ListAdapter wrapped) {
             super(wrapped);
             this.account = account;
-            this.context = context;
+            layoutInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
@@ -379,21 +383,21 @@ public class AccountsListFragment extends SherlockListFragment implements
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (position == 0 && getWrappedAdapter().getCount() == 0) {
-                TextView view;
+                View view;
                 if (convertView != null && convertView instanceof TextView) {
-                    view = (TextView) convertView;
+                    view = convertView;
                 } else {
-                    view = new TextView(context);
+                    view = layoutInflater.inflate(R.layout.row_bank_account_status, parent, false);
                 }
 
-                // view.setLayoutParams(new ViewGroup.LayoutParams(
-                // ViewGroup.LayoutParams.MATCH_PARENT,
-                // ViewGroup.LayoutParams.WRAP_CONTENT));
+                TextView label = (TextView) view;
 
                 if (ContentResolver.isSyncActive(account, BankingContract.AUTHORITY)) {
-                    view.setText("syncing...");
+                    label.setText("syncing... " + account.name);
+                } else if (ContentResolver.isSyncPending(account, BankingContract.AUTHORITY)) {
+                    label.setText("pending sync " + account.name);
                 } else {
-                    view.setText("no accounts");
+                    label.setText("no accounts " + account.name);
                 }
 
                 return view;
