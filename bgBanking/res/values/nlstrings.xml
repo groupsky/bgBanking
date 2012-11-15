@@ -16,23 +16,23 @@
 <resources>
     <!-- Authority type -->
     <skip/>
-    <string name="authority_type">eu.masconsult.bgbanking</string>
+    <string name="authority_type" translatable="false">eu.masconsult.bgbanking</string>
     
     <!-- DSK Bank strings -->
     <skip />
-    <string name="bank_account_type_dskbank">eu.masconsult.bgbanking.dskbank</string>
+    <string name="bank_account_type_dskbank" translatable="false">eu.masconsult.bgbanking.dskbank</string>
 
     <!-- ProCredit Bank strings -->
     <skip />
-    <string name="bank_account_type_procreditbank">eu.masconsult.bgbanking.procredit</string>
+    <string name="bank_account_type_procreditbank" translatable="false">eu.masconsult.bgbanking.procredit</string>
 
     <!-- SGExpressBank strings -->
     <skip />
-    <string name="bank_account_type_sgexpress">eu.masconsult.bgbanking.sgexpress</string>
+    <string name="bank_account_type_sgexpress" translatable="false">eu.masconsult.bgbanking.sgexpress</string>
 
     <!-- FIBank strings -->
     <skip />
-    <string name="bank_account_type_fibank_my">eu.masconsult.bgbanking.fibank.my</string>
-    <string name="bank_account_type_fibank_ebanking">eu.masconsult.bgbanking.fibank.ebanking</string>
+    <string name="bank_account_type_fibank_my" translatable="false">eu.masconsult.bgbanking.fibank.my</string>
+    <string name="bank_account_type_fibank_ebanking" translatable="false">eu.masconsult.bgbanking.fibank.ebanking</string>
     
 </resources>
