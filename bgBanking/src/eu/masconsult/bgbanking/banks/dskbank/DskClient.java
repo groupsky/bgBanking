@@ -177,7 +177,7 @@ public class DskClient implements BankClient {
                     new BasicNameValuePair(PARAM_SESSION_ID, session_id)),
                     ENCODING);
         } catch (ClientProtocolException e) {
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
 
