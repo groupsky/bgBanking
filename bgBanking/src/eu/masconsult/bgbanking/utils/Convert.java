@@ -18,6 +18,7 @@ package eu.masconsult.bgbanking.utils;
 
 import java.text.NumberFormat;
 import java.util.Currency;
+import java.util.Locale;
 
 import org.acra.ACRA;
 
@@ -64,7 +65,7 @@ public class Convert {
             } catch (IllegalArgumentException e) {
                 ACRA.getErrorReporter().handleSilentException(e);
                 EasyTracker.getTracker().trackException("currency " + currency, e, false);
-                return String.format(DEFAULT_CURRENCY_FORMAT, value, currency);
+                return String.format(Locale.ENGLISH, DEFAULT_CURRENCY_FORMAT, value, currency);
             }
         }
         return format.format(value);
